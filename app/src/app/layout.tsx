@@ -10,9 +10,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "CvSali — Org & Event Management System",
+  title: "Dalisay — Smart Scheduling for Smarter Campuses",
   description:
-    "The official Cavite State University platform for student organizations, campus events, and participant management.",
+    "An automated scheduling system for Cavite State University that efficiently manages faculty loads and room assignments.",
 };
 
 export default function RootLayout({

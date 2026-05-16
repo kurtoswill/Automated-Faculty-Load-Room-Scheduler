@@ -452,23 +452,23 @@ export default function LoginPage() {
       >
         {/* ── Brand ── */}
         <div className="flex flex-col items-center text-center mb-7">
-          {/* <div className="flex items-center gap-3 mb-5">
+          <div className="flex items-center gap-3 mb-5">
             <BrandLogo size={44} />
             <div className="text-left">
               <p
                 className="text-[17px] font-bold leading-tight"
-                style={{ color: 'var(--color-text)' }}
+                style={{ color: "var(--color-text)" }}
               >
-                SchedMaster
+                Dalisay
               </p>
               <p
                 className="text-[10.5px] font-medium uppercase tracking-widest"
-                style={{ color: 'var(--color-text-muted)' }}
+                style={{ color: "var(--color-text-muted)" }}
               >
-                Faculty Load &amp; Room Scheduler
+                Smart Scheduling for Smarter Campuses
               </p>
             </div>
-          </div> */}
+          </div>
 
           <h1
             className="text-[22px] font-bold mb-1.5"
@@ -516,12 +516,12 @@ export default function LoginPage() {
           <br />
           Contact your administrator for account issues.
         </p>
-        {/* <p
+        <p
           className="text-center mt-2 text-[11px]"
-          style={{ color: 'var(--color-border)' }}
+          style={{ color: "var(--color-border)" }}
         >
-          SchedMaster v1.0 &nbsp;·&nbsp; {new Date().getFullYear()}
-        </p> */}
+          Dalisay v1.0 &nbsp;·&nbsp; {new Date().getFullYear()}
+        </p>
       </div>
     </div>
   );
