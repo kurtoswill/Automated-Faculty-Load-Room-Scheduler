@@ -171,7 +171,7 @@ function getNav(role: UserRole): NavGroup[] {
       {
         heading: "Load & Students",
         items: [
-          { label: "Faculty Load", href: "/faculty-load", icon: Icons.myload },
+          { label: "Faculty Load", href: "/instructor/faculty-load", icon: Icons.myload },
           {
             label: "Enlistments",
             href: "/enlistments",
