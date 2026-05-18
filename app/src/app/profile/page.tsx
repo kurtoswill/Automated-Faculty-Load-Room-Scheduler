@@ -1,6 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
+
+import AppShell from "@/components/Navbar";
+import type { UserRole } from "@/config/navigation/types";
 
 // ─── Types (mirror DB schema) ────────────────────────────────────────────────
 
@@ -136,7 +140,7 @@ function ReadOnlyField({ label, value }: { label: string; value: string }) {
             <span className="font-mono text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5">
                 {value || "—"}
             </span>
-        </div>
+        </AppShell>
     );
 }
 
@@ -151,6 +155,12 @@ export default function ProfilePage() {
 
     const department = departments.find((d) => d.id === user.dept_id);
     const roleConfig = ROLE_CONFIG[user.role];
+
+    const roleKey = (user.role === "Admin"
+        ? "admin"
+        : user.role === "Instructor"
+            ? "instructor"
+            : "student") as UserRole;
 
     // Editable fields — only first_name, last_name, email are editable by user
     const [firstName, setFirstName] = useState(user.first_name);
@@ -194,33 +204,13 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans">
-
-            {/* ── Top Bar ── */}
-            <header className="sticky top-0 z-10 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    {/* Breadcrumb */}
-                    <span className="text-slate-400 text-sm">
-                        {user.role === "Admin"
-                            ? "Admin"
-                            : user.role === "Instructor"
-                                ? "Instructor"
-                                : "Student"}
-                    </span>
-                    <span className="text-slate-300">/</span>
-                    <span className="text-slate-800 text-sm font-semibold">My Profile</span>
-                </div>
-
-                {/* System wordmark */}
-                <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-amber-400" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                        Dalisay
-                    </span>
-                </div>
-            </header>
-
-            <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10 flex flex-col gap-8">
+        <AppShell
+            role={roleKey}
+            userName={`${user.first_name} ${user.last_name}`}
+            pageTitle="My Profile"
+            isIrregular={user.role === "Student" && user.is_irregular}
+        >
+            <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-8">
 
                 {/* ── Identity Card ── */}
                 <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
