@@ -138,7 +138,7 @@ export default function AdminFacultyLoadDetailPage() {
 
     return (
         <AppShell role="admin" userName="Admin User" pageTitle="Faculty Load — Detail">
-            <div className="animate-fade-in space-y-6 max-w-4xl">
+            <div className="animate-fade-in flex flex-col gap-6">
 
                 {/* ── Breadcrumb ── */}
                 <nav className="flex items-center gap-2 text-xs" style={{ color: "var(--color-text-muted)" }}>

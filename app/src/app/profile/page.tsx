@@ -210,7 +210,7 @@ export default function ProfilePage() {
             pageTitle="My Profile"
             isIrregular={user.role === "Student" && user.is_irregular}
         >
-            <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+            <main className="animate-fade-in mx-auto py-6 flex flex-col gap-6">
 
                 {/* ── Identity Card ── */}
                 <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

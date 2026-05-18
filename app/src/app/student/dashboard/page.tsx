@@ -7,57 +7,57 @@ import AppShell from '@/components/Navbar';
 // ─────────────────────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────────────────────
-type StudentType  = 'regular' | 'irregular';
+type StudentType = 'regular' | 'irregular';
 type EnlistStatus = 'Pending' | 'Approved' | 'Rejected';
 
 interface ScheduleClass {
-  id:         string;
-  subject:    string;
-  code:       string;
+  id: string;
+  subject: string;
+  code: string;
   instructor: string;
-  room:       string;
-  building:   string;
-  day:        string;
-  time:       string;
-  type:       'Lecture' | 'Lab';
-  isToday:    boolean;
+  room: string;
+  building: string;
+  day: string;
+  time: string;
+  type: 'Lecture' | 'Lab';
+  isToday: boolean;
 }
 
 interface EnlistRow {
-  id:          string;
-  subject:     string;
-  code:        string;
-  instructor:  string;
-  initials:    string;
-  room:        string;
-  schedule:    string;
-  status:      EnlistStatus;
+  id: string;
+  subject: string;
+  code: string;
+  instructor: string;
+  initials: string;
+  room: string;
+  schedule: string;
+  status: EnlistStatus;
   submittedAt: string;
-  remarks?:    string;
+  remarks?: string;
 }
 
 // ─────────────────────────────────────────────────────────────
 // Config — swap with session/auth data
 // ─────────────────────────────────────────────────────────────
-const STUDENT_TYPE:   StudentType = 'irregular'; // change to 'regular' for regular view
-const STUDENT_NAME    = 'Carlo Reyes';
-const STUDENT_ID      = '2021-00123';
-const STUDENT_COURSE  = 'BSCS — 3rd Year';
+const STUDENT_TYPE: StudentType = 'irregular'; // change to 'regular' for regular view
+const STUDENT_NAME = 'Carlo Reyes';
+const STUDENT_ID = '2021-00123';
+const STUDENT_COURSE = 'BSCS — 3rd Year';
 
 // ─────────────────────────────────────────────────────────────
 // Mock data
 // ─────────────────────────────────────────────────────────────
 const MY_SCHEDULE: ScheduleClass[] = [
-  { id: 'S1', subject: 'Data Structures',     code: 'CMSC 101', instructor: 'Dr. Maria Santos',     room: 'Room 204', building: 'Main', day: 'Mon/Wed/Fri', time: '07:30–09:00', type: 'Lecture', isToday: true  },
-  { id: 'S2', subject: 'Algorithm Analysis',  code: 'CS 401',   instructor: 'Dr. Luz Mendoza',      room: 'Room 202', building: 'Main', day: 'Tue/Thu',     time: '09:00–10:30', type: 'Lecture', isToday: true  },
-  { id: 'S3', subject: 'Web Development',     code: 'IT 301',   instructor: 'Prof. Juan dela Cruz', room: 'Lab 1',    building: 'ICT',  day: 'Mon/Wed',     time: '13:00–14:30', type: 'Lab',     isToday: false },
-  { id: 'S4', subject: 'Technical Writing',   code: 'ENGL 102', instructor: 'Prof. Ben Torres',     room: 'Room 305', building: 'Main', day: 'Fri',         time: '10:30–12:00', type: 'Lecture', isToday: false },
+  { id: 'S1', subject: 'Data Structures', code: 'CMSC 101', instructor: 'Dr. Maria Santos', room: 'Room 204', building: 'Main', day: 'Mon/Wed/Fri', time: '07:30–09:00', type: 'Lecture', isToday: true },
+  { id: 'S2', subject: 'Algorithm Analysis', code: 'CS 401', instructor: 'Dr. Luz Mendoza', room: 'Room 202', building: 'Main', day: 'Tue/Thu', time: '09:00–10:30', type: 'Lecture', isToday: true },
+  { id: 'S3', subject: 'Web Development', code: 'IT 301', instructor: 'Prof. Juan dela Cruz', room: 'Lab 1', building: 'ICT', day: 'Mon/Wed', time: '13:00–14:30', type: 'Lab', isToday: false },
+  { id: 'S4', subject: 'Technical Writing', code: 'ENGL 102', instructor: 'Prof. Ben Torres', room: 'Room 305', building: 'Main', day: 'Fri', time: '10:30–12:00', type: 'Lecture', isToday: false },
 ];
 
 const MY_ENLISTMENTS: EnlistRow[] = [
-  { id: 'EN-014', subject: 'Software Engineering', code: 'CS 402',   instructor: 'Dr. Ana Reyes',      initials: 'AR', room: 'Room 305', schedule: 'Fri · 10:30–12:00',        status: 'Pending',  submittedAt: '2h ago'  },
-  { id: 'EN-011', subject: 'Operating Systems',    code: 'CS 303',   instructor: 'Prof. dela Cruz',    initials: 'JD', room: 'Room 202', schedule: 'Tue/Thu · 13:00–14:30',     status: 'Approved', submittedAt: '1d ago'  },
-  { id: 'EN-009', subject: 'Discrete Math',        code: 'MATH 301', instructor: 'Dr. Maria Santos',  initials: 'MS', room: 'Room 104', schedule: 'Mon/Wed · 09:00–10:30',     status: 'Rejected', submittedAt: '3d ago', remarks: 'Class is already at full capacity.' },
+  { id: 'EN-014', subject: 'Software Engineering', code: 'CS 402', instructor: 'Dr. Ana Reyes', initials: 'AR', room: 'Room 305', schedule: 'Fri · 10:30–12:00', status: 'Pending', submittedAt: '2h ago' },
+  { id: 'EN-011', subject: 'Operating Systems', code: 'CS 303', instructor: 'Prof. dela Cruz', initials: 'JD', room: 'Room 202', schedule: 'Tue/Thu · 13:00–14:30', status: 'Approved', submittedAt: '1d ago' },
+  { id: 'EN-009', subject: 'Discrete Math', code: 'MATH 301', instructor: 'Dr. Maria Santos', initials: 'MS', room: 'Room 104', schedule: 'Mon/Wed · 09:00–10:30', status: 'Rejected', submittedAt: '3d ago', remarks: 'Class is already at full capacity.' },
 ];
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -72,25 +72,25 @@ const Ico = ({ d, size = 15 }: { d: string; size?: number }) => (
   </svg>
 );
 
-const IcoArrow    = () => <Ico d="M5 12h14M12 5l7 7-7 7" size={13} />;
-const IcoClock    = () => <Ico d="M12 2a10 10 0 100 20A10 10 0 0012 2zM12 6v6l4 2" size={14} />;
-const IcoRoom     = () => <Ico d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5zM9 21V12h6v9" size={14} />;
-const IcoUser     = () => <Ico d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 3a4 4 0 100 8 4 4 0 000-8" size={14} />;
-const IcoBook     = () => <Ico d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 014 17V4h16v13M4 19.5V21" size={14} />;
-const IcoPlus     = () => <Ico d="M12 5v14M5 12h14" size={14} />;
+const IcoArrow = () => <Ico d="M5 12h14M12 5l7 7-7 7" size={13} />;
+const IcoClock = () => <Ico d="M12 2a10 10 0 100 20A10 10 0 0012 2zM12 6v6l4 2" size={14} />;
+const IcoRoom = () => <Ico d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5zM9 21V12h6v9" size={14} />;
+const IcoUser = () => <Ico d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 3a4 4 0 100 8 4 4 0 000-8" size={14} />;
+const IcoBook = () => <Ico d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 014 17V4h16v13M4 19.5V21" size={14} />;
+const IcoPlus = () => <Ico d="M12 5v14M5 12h14" size={14} />;
 const IcoCalendar = () => <Ico d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" size={15} />;
-const IcoID       = () => <Ico d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z" size={15} />;
-const IcoAlert    = () => <Ico d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01" size={14} />;
-const IcoX        = () => <Ico d="M18 6L6 18M6 6l12 12" size={13} />;
-const IcoFlask    = () => <Ico d="M9 3h6M10 3v5l-3.5 7A3 3 0 009.5 21h5a3 3 0 002.96-6L14 8V3" size={13} />;
-const IcoCheck    = () => <Ico d="M20 6L9 17l-5-5" size={13} />;
+const IcoID = () => <Ico d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z" size={15} />;
+const IcoAlert = () => <Ico d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01" size={14} />;
+const IcoX = () => <Ico d="M18 6L6 18M6 6l12 12" size={13} />;
+const IcoFlask = () => <Ico d="M9 3h6M10 3v5l-3.5 7A3 3 0 009.5 21h5a3 3 0 002.96-6L14 8V3" size={13} />;
+const IcoCheck = () => <Ico d="M20 6L9 17l-5-5" size={13} />;
 
 // ─────────────────────────────────────────────────────────────
 // Shared pieces
 // ─────────────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: EnlistStatus }) {
   const map = {
-    Pending:  { bg: '#fff8e6', color: '#92620a', dot: '#f0a500' },
+    Pending: { bg: '#fff8e6', color: '#92620a', dot: '#f0a500' },
     Approved: { bg: '#e8f5ee', color: '#1a7a3c', dot: '#22a050' },
     Rejected: { bg: '#fdecea', color: '#d93025', dot: '#d93025' },
   };
@@ -137,7 +137,7 @@ function StatCard({ label, value, sub, icon, iconBg, iconColor, accent, href }: 
   accent?: string; href?: string;
 }) {
   const inner = (
-    <div className="card card-body h-full flex flex-col gap-3 hover:-translate-y-px transition-transform duration-150"
+    <div className="card card-body h-full flex flex-row gap-3 hover:-translate-y-px transition-transform duration-150 items-center"
       style={{ boxShadow: 'var(--shadow-sm)', borderLeft: accent ? `3px solid ${accent}` : undefined }}>
       <div className="w-10 h-10 rounded-xl flex items-center justify-center"
         style={{ background: iconBg, color: iconColor }}>
@@ -145,6 +145,9 @@ function StatCard({ label, value, sub, icon, iconBg, iconColor, accent, href }: 
       </div>
       <div>
         <p className="text-[26px] font-bold leading-none mb-1" style={{ color: iconColor }}>{value}</p>
+      </div>
+      <div>
+
         <p className="text-[12.5px] font-medium" style={{ color: 'var(--color-text)' }}>{label}</p>
         <p className="text-[11.5px] mt-0.5" style={{ color: 'var(--color-text-muted)' }}>{sub}</p>
       </div>
@@ -343,9 +346,9 @@ function IDChip() {
 export default function StudentDashboard() {
   const [scheduleTab, setScheduleTab] = useState<'today' | 'week'>('today');
 
-  const isIrregular   = STUDENT_TYPE === 'irregular';
-  const todayClasses  = MY_SCHEDULE.filter(c => c.isToday);
-  const pendingCount  = MY_ENLISTMENTS.filter(e => e.status === 'Pending').length;
+  const isIrregular = STUDENT_TYPE === 'irregular';
+  const todayClasses = MY_SCHEDULE.filter(c => c.isToday);
+  const pendingCount = MY_ENLISTMENTS.filter(e => e.status === 'Pending').length;
   const approvedCount = MY_ENLISTMENTS.filter(e => e.status === 'Approved').length;
   const rejectedCount = MY_ENLISTMENTS.filter(e => e.status === 'Rejected').length;
 
@@ -568,7 +571,7 @@ export default function StudentDashboard() {
           {/* Status summary chips */}
           <div className="flex gap-3 mb-4 flex-wrap">
             {[
-              { label: 'Pending',  count: pendingCount,  bg: '#fff8e6', color: '#92620a' },
+              { label: 'Pending', count: pendingCount, bg: '#fff8e6', color: '#92620a' },
               { label: 'Approved', count: approvedCount, bg: '#e8f5ee', color: '#1a7a3c' },
               { label: 'Rejected', count: rejectedCount, bg: '#fdecea', color: '#d93025' },
             ].map(s => (

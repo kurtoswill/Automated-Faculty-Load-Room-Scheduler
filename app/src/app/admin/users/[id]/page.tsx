@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { User, Department, Role, UpdateUserPayload } from "../types";
+import AppShell from "@/components/Navbar";
 
 // ─── Placeholder Data ─────────────────────────────────────────────────────────
 // TODO: Replace with → fetch(`/api/admin/users/${id}`) and fetch("/api/departments")
@@ -332,288 +333,273 @@ export default function AdminUserDetailPage() {
     // ─────────────────────────────────────────────────────────────────────────
 
     return (
-        <div className="page-shell">
+        <AppShell role="admin" userName="Admin Cruz" pageTitle="User Management">
+            <div className="page-shell">
 
-            {/* ── Modal ── */}
-            {modal && (
-                <ConfirmModal
-                    type={modal}
-                    isLoading={modalLoading}
-                    onConfirm={handleModalConfirm}
-                    onCancel={() => setModal(null)}
-                />
-            )}
-
-            {/* ── Top Bar ── */}
-            <header className="sticky top-0 z-10 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <a href="/admin/users" className="text-text-muted text-sm hover:text-text transition-colors flex items-center gap-1">
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-                        Users
-                    </a>
-                    <span className="text-border">/</span>
-                    <span className="text-text text-sm font-semibold">
-                        {user.last_name}, {user.first_name}
-                    </span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-accent" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-text-muted">Dalisay</span>
-                </div>
-            </header>
-
-            <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10 flex flex-col gap-6">
-
-                {/* ── Identity card ── */}
-                <section className="card">
-                    <div className="h-2 bg-gradient-to-r from-primary via-primary-dark to-accent" />
-                    <div className="card-body flex flex-col sm:flex-row gap-5 items-start sm:items-center">
-                        <div className="relative flex-shrink-0">
-                            <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center shadow-md">
-                                <span className="text-2xl font-bold text-text-on-primary">
-                                    {getInitials(firstName, lastName)}
-                                </span>
-                            </div>
-                            <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${user.is_active ? "bg-success" : "bg-error"}`} />
-                        </div>
-                        <div className="flex-1 flex flex-col gap-2">
-                            <div className="flex flex-wrap items-center gap-2">
-                                <h1 className="text-2xl font-bold text-text tracking-tight">
-                                    {user.first_name} {user.last_name}
-                                </h1>
-                                <span className={`badge ${roleStyle.badge}`}>
-                                    {roleStyle.label}
-                                </span>
-                                {!user.is_active && (
-                                    <span className="badge badge-red">Inactive</span>
-                                )}
-                                {user.role === "Student" && user.is_irregular && (
-                                    <span className="badge badge-yellow">Irregular</span>
-                                )}
-                            </div>
-                            <p className="text-sm text-text-secondary">{user.email}</p>
-                            <div className="flex flex-wrap gap-2 mt-1">
-                                <span className="font-mono text-xs text-text-secondary bg-surface-2 rounded-md px-2 py-1">
-                                    UID #{user.id}
-                                </span>
-                                <span className="font-mono text-xs text-text-muted bg-primary-muted rounded-md px-2 py-1">
-                                    Joined {formatDate(user.created_at)}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* ── Temp password display (after reset) ── */}
-                {tempPassword && (
-                    <div className="bg-warning/10 border border-warning rounded-xl px-5 py-4 flex items-start gap-3">
-                        <svg className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                        </svg>
-                        <div>
-                            <p className="text-sm font-semibold text-text">Temporary Password Generated</p>
-                            <p className="font-mono text-sm text-text mt-1 select-all bg-surface-2 rounded px-2 py-1 inline-block">
-                                {tempPassword}
-                            </p>
-                            <p className="text-xs text-text-secondary mt-1.5">
-                                Share this securely. It will not be shown again.
-                            </p>
-                            <button onClick={() => setTempPassword(null)} className="text-xs text-text-secondary underline mt-1 hover:text-text transition-colors">
-                                Dismiss
-                            </button>
-                        </div>
-                    </div>
+                {/* ── Modal ── */}
+                {modal && (
+                    <ConfirmModal
+                        type={modal}
+                        isLoading={modalLoading}
+                        onConfirm={handleModalConfirm}
+                        onCancel={() => setModal(null)}
+                    />
                 )}
 
-                {/* ── Account Identifiers (read-only) ── */}
-                <section className="card p-6 sm:p-8">
-                    <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-5">
-                        Account Identifiers
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <ReadOnlyField label="Role" value={user.role} />
-                        {user.role !== "Student" && (
-                            <ReadOnlyField label="Employee ID" value={user.employee_id ?? "—"} />
-                        )}
-                        {user.role === "Student" && (
-                            <ReadOnlyField label="Student ID" value={user.student_id ?? "—"} />
-                        )}
-                        <ReadOnlyField label="Account Status" value={user.is_active ? "Active" : "Inactive"} />
-                        <ReadOnlyField label="Created" value={formatDate(user.created_at)} />
-                    </div>
-                    <p className="text-xs text-text-secondary mt-4">
-                        Role and account IDs are set at creation. To change them, contact the system administrator.
-                    </p>
-                </section>
 
-                {/* ── Editable Info ── */}
-                <section className="card p-6 sm:p-8 flex flex-col gap-5">
-                    <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted">
-                        Personal Information
-                    </h2>
+                <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10 flex flex-col gap-6">
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <FieldLabel>First Name</FieldLabel>
-                            <TextInput id="first_name" value={firstName}
-                                onChange={(v) => { setFirstName(v); setEditErrors((e) => ({ ...e, first_name: undefined })); }}
-                                error={editErrors.first_name} />
-                        </div>
-                        <div>
-                            <FieldLabel>Last Name</FieldLabel>
-                            <TextInput id="last_name" value={lastName}
-                                onChange={(v) => { setLastName(v); setEditErrors((e) => ({ ...e, last_name: undefined })); }}
-                                error={editErrors.last_name} />
-                        </div>
-                    </div>
-
-                    <div>
-                        <FieldLabel>Institutional Email</FieldLabel>
-                        <TextInput id="email" type="email" value={email}
-                            onChange={(v) => { setEmail(v); setEditErrors((e) => ({ ...e, email: undefined })); }}
-                            error={editErrors.email} />
-                    </div>
-
-                    <div>
-                        <FieldLabel>Department</FieldLabel>
-                        <select
-                            value={deptId}
-                            onChange={(e) => setDeptId(Number(e.target.value))}
-                            className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-text outline-none focus:border-border-focus focus:ring-2 focus:ring-primary-muted bg-surface"
-                        >
-                            {departments.map((d) => (
-                                <option key={d.id} value={d.id}>{d.code} — {d.name}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {(user.role === "Admin" || user.role === "Instructor") && (
-                        <div>
-                            <FieldLabel>Employee ID</FieldLabel>
-                            <TextInput id="employee_id" value={employeeId}
-                                onChange={(v) => { setEmployeeId(v); setEditErrors((e) => ({ ...e, employee_id: undefined })); }}
-                                error={editErrors.employee_id} />
-                        </div>
-                    )}
-
-                    {user.role === "Student" && (
-                        <>
-                            <div>
-                                <FieldLabel>Student ID</FieldLabel>
-                                <TextInput id="student_id" value={studentId}
-                                    onChange={(v) => { setStudentId(v); setEditErrors((e) => ({ ...e, student_id: undefined })); }}
-                                    error={editErrors.student_id} />
+                    {/* ── Identity card ── */}
+                    <section className="card">
+                        <div className="h-2 bg-gradient-to-r from-primary via-primary-dark to-accent" />
+                        <div className="card-body flex flex-col sm:flex-row gap-5 items-start sm:items-center">
+                            <div className="relative flex-shrink-0">
+                                <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center shadow-md">
+                                    <span className="text-2xl font-bold text-text-on-primary">
+                                        {getInitials(firstName, lastName)}
+                                    </span>
+                                </div>
+                                <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${user.is_active ? "bg-success" : "bg-error"}`} />
                             </div>
-                            {/* is_irregular toggle */}
-                            <div className="flex items-start gap-3 bg-warning/10 border border-warning rounded-xl p-4">
-                                <button type="button"
-                                    onClick={() => setIsIrregular((v) => !v)}
-                                    style={{ height: "22px", width: "40px" }}
-                                    className={`relative mt-0.5 rounded-full flex-shrink-0 transition-colors duration-200 border-2 ${isIrregular ? "bg-warning border-warning" : "bg-border border-border"}`}
-                                    aria-pressed={isIrregular}
-                                >
-                                    <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${isIrregular ? "translate-x-[18px]" : "translate-x-0.5"}`} />
-                                </button>
-                                <div>
-                                    <p className="text-sm font-semibold text-text">Irregular Student</p>
-                                    <p className="text-xs text-text-secondary mt-0.5">
-                                        This student has back subjects and can be assigned to sections across multiple year levels.
-                                    </p>
+                            <div className="flex-1 flex flex-col gap-2">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <h1 className="text-2xl font-bold text-text tracking-tight">
+                                        {user.first_name} {user.last_name}
+                                    </h1>
+                                    <span className={`badge ${roleStyle.badge}`}>
+                                        {roleStyle.label}
+                                    </span>
+                                    {!user.is_active && (
+                                        <span className="badge badge-red">Inactive</span>
+                                    )}
+                                    {user.role === "Student" && user.is_irregular && (
+                                        <span className="badge badge-yellow">Irregular</span>
+                                    )}
+                                </div>
+                                <p className="text-sm text-text-secondary">{user.email}</p>
+                                <div className="flex flex-wrap gap-2 mt-1">
+                                    <span className="font-mono text-xs text-text-secondary bg-surface-2 rounded-md px-2 py-1">
+                                        UID #{user.id}
+                                    </span>
+                                    <span className="font-mono text-xs text-text-muted bg-primary-muted rounded-md px-2 py-1">
+                                        Joined {formatDate(user.created_at)}
+                                    </span>
                                 </div>
                             </div>
-                        </>
-                    )}
-
-                    {/* Status banners */}
-                    {saveStatus === "success" && (
-                        <div className="flex items-center gap-2 text-sm text-success bg-success/10 border border-success rounded-lg px-4 py-3">
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                            Profile updated successfully.
                         </div>
-                    )}
-                    {saveStatus === "error" && (
-                        <div className="flex items-center gap-2 text-sm text-error bg-error-light border border-error rounded-lg px-4 py-3">
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12A9 9 0 113 12a9 9 0 0118 0z" /></svg>
-                            Failed to update profile. Please try again.
-                        </div>
-                    )}
+                    </section>
 
-                    {/* Actions */}
-                    <div className="flex flex-wrap items-center gap-3 pt-1">
-                        <button onClick={handleSave} disabled={!isDirty || isSaving}
-                            className={`btn ${isDirty && !isSaving ? "btn-primary" : "opacity-50 cursor-not-allowed"}`}
-                        >
-                            {isSaving ? (
-                                <>
-                                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                                    </svg>
-                                    Saving…
-                                </>
-                            ) : "Save Changes"}
-                        </button>
-                        {isDirty && (
-                            <button onClick={handleDiscard} className="text-sm text-text-secondary hover:text-text transition-colors underline underline-offset-2">
-                                Discard
-                            </button>
-                        )}
-                    </div>
-                </section>
-
-                {/* ── Password Reset ── */}
-                <section className="card p-6 sm:p-8">
-                    <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-1">
-                        Password
-                    </h2>
-                    <p className="text-sm text-text-secondary mb-4">
-                        Generate a temporary password for this user. Share it securely — it will only be shown once.
-                    </p>
-                    <button
-                        onClick={() => setModal("resetPassword")}
-                        className="btn btn-outline"
-                    >
-                        <svg className="w-4 h-4 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                        </svg>
-                        Reset Password
-                    </button>
-                </section>
-
-                {/* ── Danger Zone ── */}
-                <section className="bg-surface rounded-2xl border border-error/20 shadow-sm p-6 sm:p-8">
-                    <h2 className="text-xs font-bold uppercase tracking-widest text-error/60 mb-1">
-                        Danger Zone
-                    </h2>
-                    <p className="text-sm text-text-secondary mb-5">
-                        {user.is_active
-                            ? "Deactivating this account will prevent the user from logging in. Their data and records will not be deleted."
-                            : "This account is currently inactive. Reactivating will restore full access immediately."}
-                    </p>
-                    {user.is_active ? (
-                        <button
-                            onClick={() => setModal("deactivate")}
-                            className="btn btn-danger"
-                        >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    {/* ── Temp password display (after reset) ── */}
+                    {tempPassword && (
+                        <div className="bg-warning/10 border border-warning rounded-xl px-5 py-4 flex items-start gap-3">
+                            <svg className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                             </svg>
-                            Deactivate Account
-                        </button>
-                    ) : (
+                            <div>
+                                <p className="text-sm font-semibold text-text">Temporary Password Generated</p>
+                                <p className="font-mono text-sm text-text mt-1 select-all bg-surface-2 rounded px-2 py-1 inline-block">
+                                    {tempPassword}
+                                </p>
+                                <p className="text-xs text-text-secondary mt-1.5">
+                                    Share this securely. It will not be shown again.
+                                </p>
+                                <button onClick={() => setTempPassword(null)} className="text-xs text-text-secondary underline mt-1 hover:text-text transition-colors">
+                                    Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── Account Identifiers (read-only) ── */}
+                    <section className="card p-6 sm:p-8">
+                        <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-5">
+                            Account Identifiers
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <ReadOnlyField label="Role" value={user.role} />
+                            {user.role !== "Student" && (
+                                <ReadOnlyField label="Employee ID" value={user.employee_id ?? "—"} />
+                            )}
+                            {user.role === "Student" && (
+                                <ReadOnlyField label="Student ID" value={user.student_id ?? "—"} />
+                            )}
+                            <ReadOnlyField label="Account Status" value={user.is_active ? "Active" : "Inactive"} />
+                            <ReadOnlyField label="Created" value={formatDate(user.created_at)} />
+                        </div>
+                        <p className="text-xs text-text-secondary mt-4">
+                            Role and account IDs are set at creation. To change them, contact the system administrator.
+                        </p>
+                    </section>
+
+                    {/* ── Editable Info ── */}
+                    <section className="card p-6 sm:p-8 flex flex-col gap-5">
+                        <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted">
+                            Personal Information
+                        </h2>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <FieldLabel>First Name</FieldLabel>
+                                <TextInput id="first_name" value={firstName}
+                                    onChange={(v) => { setFirstName(v); setEditErrors((e) => ({ ...e, first_name: undefined })); }}
+                                    error={editErrors.first_name} />
+                            </div>
+                            <div>
+                                <FieldLabel>Last Name</FieldLabel>
+                                <TextInput id="last_name" value={lastName}
+                                    onChange={(v) => { setLastName(v); setEditErrors((e) => ({ ...e, last_name: undefined })); }}
+                                    error={editErrors.last_name} />
+                            </div>
+                        </div>
+
+                        <div>
+                            <FieldLabel>Institutional Email</FieldLabel>
+                            <TextInput id="email" type="email" value={email}
+                                onChange={(v) => { setEmail(v); setEditErrors((e) => ({ ...e, email: undefined })); }}
+                                error={editErrors.email} />
+                        </div>
+
+                        <div>
+                            <FieldLabel>Department</FieldLabel>
+                            <select
+                                value={deptId}
+                                onChange={(e) => setDeptId(Number(e.target.value))}
+                                className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-text outline-none focus:border-border-focus focus:ring-2 focus:ring-primary-muted bg-surface"
+                            >
+                                {departments.map((d) => (
+                                    <option key={d.id} value={d.id}>{d.code} — {d.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {(user.role === "Admin" || user.role === "Instructor") && (
+                            <div>
+                                <FieldLabel>Employee ID</FieldLabel>
+                                <TextInput id="employee_id" value={employeeId}
+                                    onChange={(v) => { setEmployeeId(v); setEditErrors((e) => ({ ...e, employee_id: undefined })); }}
+                                    error={editErrors.employee_id} />
+                            </div>
+                        )}
+
+                        {user.role === "Student" && (
+                            <>
+                                <div>
+                                    <FieldLabel>Student ID</FieldLabel>
+                                    <TextInput id="student_id" value={studentId}
+                                        onChange={(v) => { setStudentId(v); setEditErrors((e) => ({ ...e, student_id: undefined })); }}
+                                        error={editErrors.student_id} />
+                                </div>
+                                {/* is_irregular toggle */}
+                                <div className="flex items-start gap-3 bg-warning/10 border border-warning rounded-xl p-4">
+                                    <button type="button"
+                                        onClick={() => setIsIrregular((v) => !v)}
+                                        style={{ height: "22px", width: "40px" }}
+                                        className={`relative mt-0.5 rounded-full flex-shrink-0 transition-colors duration-200 border-2 ${isIrregular ? "bg-warning border-warning" : "bg-border border-border"}`}
+                                        aria-pressed={isIrregular}
+                                    >
+                                        <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${isIrregular ? "translate-x-[18px]" : "translate-x-0.5"}`} />
+                                    </button>
+                                    <div>
+                                        <p className="text-sm font-semibold text-text">Irregular Student</p>
+                                        <p className="text-xs text-text-secondary mt-0.5">
+                                            This student has back subjects and can be assigned to sections across multiple year levels.
+                                        </p>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        {/* Status banners */}
+                        {saveStatus === "success" && (
+                            <div className="flex items-center gap-2 text-sm text-success bg-success/10 border border-success rounded-lg px-4 py-3">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                                Profile updated successfully.
+                            </div>
+                        )}
+                        {saveStatus === "error" && (
+                            <div className="flex items-center gap-2 text-sm text-error bg-error-light border border-error rounded-lg px-4 py-3">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12A9 9 0 113 12a9 9 0 0118 0z" /></svg>
+                                Failed to update profile. Please try again.
+                            </div>
+                        )}
+
+                        {/* Actions */}
+                        <div className="flex flex-wrap items-center gap-3 pt-1">
+                            <button onClick={handleSave} disabled={!isDirty || isSaving}
+                                className={`btn ${isDirty && !isSaving ? "btn-primary" : "opacity-50 cursor-not-allowed"}`}
+                            >
+                                {isSaving ? (
+                                    <>
+                                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                        </svg>
+                                        Saving…
+                                    </>
+                                ) : "Save Changes"}
+                            </button>
+                            {isDirty && (
+                                <button onClick={handleDiscard} className="text-sm text-text-secondary hover:text-text transition-colors underline underline-offset-2">
+                                    Discard
+                                </button>
+                            )}
+                        </div>
+                    </section>
+
+                    {/* ── Password Reset ── */}
+                    <section className="card p-6 sm:p-8">
+                        <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-1">
+                            Password
+                        </h2>
+                        <p className="text-sm text-text-secondary mb-4">
+                            Generate a temporary password for this user. Share it securely — it will only be shown once.
+                        </p>
                         <button
-                            onClick={() => setModal("reactivate")}
+                            onClick={() => setModal("resetPassword")}
                             className="btn btn-outline"
                         >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg className="w-4 h-4 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                             </svg>
-                            Reactivate Account
+                            Reset Password
                         </button>
-                    )}
-                </section>
+                    </section>
 
-            </main>
-        </div>
+                    {/* ── Danger Zone ── */}
+                    <section className="bg-surface rounded-2xl border border-error/20 shadow-sm p-6 sm:p-8">
+                        <h2 className="text-xs font-bold uppercase tracking-widest text-error/60 mb-1">
+                            Danger Zone
+                        </h2>
+                        <p className="text-sm text-text-secondary mb-5">
+                            {user.is_active
+                                ? "Deactivating this account will prevent the user from logging in. Their data and records will not be deleted."
+                                : "This account is currently inactive. Reactivating will restore full access immediately."}
+                        </p>
+                        {user.is_active ? (
+                            <button
+                                onClick={() => setModal("deactivate")}
+                                className="btn btn-danger"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                </svg>
+                                Deactivate Account
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => setModal("reactivate")}
+                                className="btn btn-outline"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Reactivate Account
+                            </button>
+                        )}
+                    </section>
+
+                </main>
+            </div>
+        </AppShell>
     );
 }
