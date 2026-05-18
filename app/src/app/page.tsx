@@ -495,7 +495,7 @@ export default function LoginPage() {
               className="text-[11px] font-semibold"
               style={{ color: "var(--color-primary-light)" }}
             >
-              CvSali
+              Salikop
             </span>
           </div>
         </div>
