@@ -140,7 +140,7 @@ function ReadOnlyField({ label, value }: { label: string; value: string }) {
             <span className="font-mono text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5">
                 {value || "—"}
             </span>
-        </AppShell>
+        </div>
     );
 }
 
@@ -396,6 +396,6 @@ export default function ProfilePage() {
                 </section>
 
             </main>
-        </div>
+        </AppShell>
     );
 }
