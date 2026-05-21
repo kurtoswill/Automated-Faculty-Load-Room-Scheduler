@@ -122,10 +122,29 @@ export default function AdminFacultyLoadPage() {
 
                 {/* ── Summary Row ── */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <StatCard label="Total Instructors" value={String(FACULTY_LOAD_DATA.length)} icon="👨‍🏫" />
-                    <StatCard label="At Load Limit" value={String(atLimit)} icon="🔴" />
-                    <StatCard label="Near Limit (≥80%)" value={String(nearLimit)} icon="🟡" />
-                    <StatCard label="No Load Assigned" value={String(noLoad)} icon="⚪" />
+                    <StatCard
+                        label="Total Instructors"
+                        value={String(FACULTY_LOAD_DATA.length)}
+                        icon={<InstructorIcon />}
+                    />
+
+                    <StatCard
+                        label="At Load Limit"
+                        value={String(atLimit)}
+                        icon={<LoadStatusIcon status="At Limit" />}
+                    />
+
+                    <StatCard
+                        label="Near Limit (≥80%)"
+                        value={String(nearLimit)}
+                        icon={<LoadStatusIcon status="Near Limit" />}
+                    />
+
+                    <StatCard
+                        label="No Load Assigned"
+                        value={String(noLoad)}
+                        icon={<LoadStatusIcon status="No Load" />}
+                    />
                 </div>
 
                 {/* ── Table ── */}
@@ -260,7 +279,7 @@ export default function AdminFacultyLoadPage() {
 }
 
 // ─── Stat Card ────────────────────────────────────────────────
-function StatCard({ label, value, icon }: { label: string; value: string; icon: string }) {
+function StatCard({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
     return (
         <div className="card card-body flex items-center gap-4">
             <span className="text-2xl">{icon}</span>
@@ -269,5 +288,23 @@ function StatCard({ label, value, icon }: { label: string; value: string; icon: 
                 <p className="text-xs mt-0.5" style={{ color: "var(--color-text-secondary)" }}>{label}</p>
             </div>
         </div>
+    );
+}
+
+function InstructorIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 text-gray-500">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+        </svg>
+    );
+}
+
+function LoadStatusIcon({ status }: { status: string }) {
+    const color = status === "At Limit" ? "text-red-500" : status === "Near Limit" ? "text-amber-500" : "text-gray-400";
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-5 h-5 ${color}`}>
+            <circle cx="12" cy="12" r="6" />
+            <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" className="opacity-25" />
+        </svg>
     );
 }
