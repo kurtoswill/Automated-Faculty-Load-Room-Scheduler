@@ -4,20 +4,18 @@
  * /student/schedule
  *
  * Tables consumed (per Pages.pdf):
- *   Student_Section  — links this student to their sections
- *   Confirmed_Schedule — the live, approved schedule rows
- *   Sections         — section metadata (name, day, time, year_level, status)
- *   Courses          — course_code, course_title, units
- *   Rooms            — room_number, building, capacity
- *   Users            — instructor first_name + last_name
+ * Student_Section  — links this student to their sections
+ * Confirmed_Schedule — the live, approved schedule rows
+ * Sections         — section metadata (name, day, time, year_level, status)
+ * Courses          — course_code, course_title, units
+ * Rooms            — room_number, building, capacity
+ * Users            — instructor first_name + last_name
  *
  * Access:  Student (Regular & Irregular — read-only for both)
  * Student_Section assignments are Admin-managed; student cannot edit.
- * Irregular students also see sections approved via enlistment.
  */
 
 import { useState, useMemo } from 'react';
-import Link from 'next/link';
 import AppShell from '@/components/Navbar';
 
 // ─────────────────────────────────────────────────────────────
@@ -57,8 +55,6 @@ interface ScheduleRow {
   // Confirmed_Schedule
   confirmedAt:       string;
   isActive:          boolean;
-  // UI helpers
-  source:            'official' | 'enlisted'; // official = Admin-assigned, enlisted = irregular
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -69,7 +65,7 @@ const SESSION = {
   studentId:  '2021-00123',
   course:     'BS Computer Science',
   yearLevel:  3,
-  isIrregular: true,
+  isIrregular: true, // Used only to display the "Irregular" badge on the ID
   semester:   '2025-2026 1st Sem',
 };
 
@@ -85,7 +81,7 @@ const SCHEDULE_DATA: ScheduleRow[] = [
     courseCode: 'CS 3101', courseTitle: 'Data Structures and Algorithms', units: 3.0,
     roomNumber: 'CS-204', building: 'New Academic Building', roomCapacity: 40,
     instructorFirst: 'Maria', instructorLast: 'Santos', instructorDept: 'DCS',
-    confirmedAt: '2025-06-08 10:00:00', isActive: true, source: 'official',
+    confirmedAt: '2025-06-08 10:00:00', isActive: true,
   },
   {
     studentSectionId: 102, assignedAt: '2025-06-10 08:00:00',
@@ -95,7 +91,7 @@ const SCHEDULE_DATA: ScheduleRow[] = [
     courseCode: 'CS 3101', courseTitle: 'Data Structures and Algorithms', units: 3.0,
     roomNumber: 'CS-204', building: 'New Academic Building', roomCapacity: 40,
     instructorFirst: 'Maria', instructorLast: 'Santos', instructorDept: 'DCS',
-    confirmedAt: '2025-06-08 10:00:00', isActive: true, source: 'official',
+    confirmedAt: '2025-06-08 10:00:00', isActive: true,
   },
   {
     studentSectionId: 103, assignedAt: '2025-06-10 08:00:00',
@@ -105,7 +101,7 @@ const SCHEDULE_DATA: ScheduleRow[] = [
     courseCode: 'CS 3101', courseTitle: 'Data Structures and Algorithms', units: 3.0,
     roomNumber: 'CS-204', building: 'New Academic Building', roomCapacity: 40,
     instructorFirst: 'Maria', instructorLast: 'Santos', instructorDept: 'DCS',
-    confirmedAt: '2025-06-08 10:00:00', isActive: true, source: 'official',
+    confirmedAt: '2025-06-08 10:00:00', isActive: true,
   },
   {
     studentSectionId: 104, assignedAt: '2025-06-10 08:00:00',
@@ -115,7 +111,7 @@ const SCHEDULE_DATA: ScheduleRow[] = [
     courseCode: 'CS 3201', courseTitle: 'Algorithm Analysis and Design', units: 3.0,
     roomNumber: 'CS-202', building: 'New Academic Building', roomCapacity: 40,
     instructorFirst: 'Luz', instructorLast: 'Mendoza', instructorDept: 'DCS',
-    confirmedAt: '2025-06-08 10:30:00', isActive: true, source: 'official',
+    confirmedAt: '2025-06-08 10:30:00', isActive: true,
   },
   {
     studentSectionId: 105, assignedAt: '2025-06-10 08:00:00',
@@ -125,7 +121,7 @@ const SCHEDULE_DATA: ScheduleRow[] = [
     courseCode: 'CS 3201', courseTitle: 'Algorithm Analysis and Design', units: 3.0,
     roomNumber: 'CS-202', building: 'New Academic Building', roomCapacity: 40,
     instructorFirst: 'Luz', instructorLast: 'Mendoza', instructorDept: 'DCS',
-    confirmedAt: '2025-06-08 10:30:00', isActive: true, source: 'official',
+    confirmedAt: '2025-06-08 10:30:00', isActive: true,
   },
   {
     studentSectionId: 106, assignedAt: '2025-06-10 08:00:00',
@@ -135,7 +131,7 @@ const SCHEDULE_DATA: ScheduleRow[] = [
     courseCode: 'IT 3101', courseTitle: 'Web Systems and Technologies', units: 3.0,
     roomNumber: 'ICT-Lab1', building: 'ICT Building', roomCapacity: 30,
     instructorFirst: 'Juan', instructorLast: 'dela Cruz', instructorDept: 'DIT',
-    confirmedAt: '2025-06-08 11:00:00', isActive: true, source: 'official',
+    confirmedAt: '2025-06-08 11:00:00', isActive: true,
   },
   {
     studentSectionId: 107, assignedAt: '2025-06-10 08:00:00',
@@ -145,7 +141,7 @@ const SCHEDULE_DATA: ScheduleRow[] = [
     courseCode: 'IT 3101', courseTitle: 'Web Systems and Technologies', units: 3.0,
     roomNumber: 'ICT-Lab1', building: 'ICT Building', roomCapacity: 30,
     instructorFirst: 'Juan', instructorLast: 'dela Cruz', instructorDept: 'DIT',
-    confirmedAt: '2025-06-08 11:00:00', isActive: true, source: 'official',
+    confirmedAt: '2025-06-08 11:00:00', isActive: true,
   },
   {
     studentSectionId: 108, assignedAt: '2025-06-10 08:00:00',
@@ -155,19 +151,8 @@ const SCHEDULE_DATA: ScheduleRow[] = [
     courseCode: 'GE 102', courseTitle: 'Technical Communication', units: 3.0,
     roomNumber: 'GE-305', building: 'Main Building', roomCapacity: 50,
     instructorFirst: 'Ben', instructorLast: 'Torres', instructorDept: 'DGE',
-    confirmedAt: '2025-06-08 12:00:00', isActive: true, source: 'official',
+    confirmedAt: '2025-06-08 12:00:00', isActive: true,
   },
-  // Irregular — enlisted section (from a lower year level)
-  ...(SESSION.isIrregular ? [{
-    studentSectionId: 109, assignedAt: '2025-06-15 09:00:00',
-    sectionId: 9, sectionName: 'BSCS 2-B', semester: '2025-2026 1st Sem',
-    yearLevel: 2, dayOfWeek: 'Thursday' as DayOfWeek, timeStart: '13:00', timeEnd: '14:30',
-    sectionStatus: 'Confirmed' as SectionStatus,
-    courseCode: 'CS 2101', courseTitle: 'Operating Systems', units: 3.0,
-    roomNumber: 'CS-202', building: 'New Academic Building', roomCapacity: 40,
-    instructorFirst: 'Ana', instructorLast: 'Reyes', instructorDept: 'DCS',
-    confirmedAt: '2025-06-12 10:00:00', isActive: true, source: 'enlisted' as const,
-  }] : []),
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -297,12 +282,6 @@ function SubjectCard({ row }: { row: ReturnType<typeof groupByCourse>[number] })
                 style={{ background: p.bg, color: p.text }}>
                 {row.courseCode}
               </span>
-              {row.source === 'enlisted' && (
-                <span className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ background: '#fff8e6', color: '#92620a' }}>
-                  Enlisted
-                </span>
-              )}
             </div>
             <h3 className="text-[13.5px] font-semibold leading-snug" style={{ color: 'var(--color-text)' }}>
               {row.courseTitle}
@@ -370,7 +349,20 @@ function WeekGrid({ rows }: { rows: ScheduleRow[] }) {
   function height(s: string, e: string) { return ((toMinutes(e) - toMinutes(s)) / TOTAL_MINS) * GRID_H; }
 
   const activeDays = DAY_ORDER.filter(d => daySlots[d].length > 0 || d !== 'Saturday');
-  const colW = `${100 / (activeDays.length + 1)}%`;  // +1 for time column
+
+  if (rows.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 gap-2">
+        <div className="w-12 h-12 rounded-full flex items-center justify-center"
+          style={{ background: 'var(--color-surface-2)' }}>
+          <IcoGrid />
+        </div>
+        <p className="text-[14px] font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+          No classes match your filters.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-x-auto">
@@ -461,97 +453,12 @@ function WeekGrid({ rows }: { rows: ScheduleRow[] }) {
   );
 }
 
-/** Per-day list used in the day-by-day view */
-function DayListView({ rows, day }: { rows: ScheduleRow[]; day: DayOfWeek }) {
-  const dayRows = rows
-    .filter(r => r.dayOfWeek === day)
-    .sort((a, b) => toMinutes(a.timeStart) - toMinutes(b.timeStart));
-
-  if (dayRows.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 gap-2 rounded-xl border border-dashed"
-        style={{ borderColor: 'var(--color-border)' }}>
-        <div className="w-10 h-10 rounded-full flex items-center justify-center"
-          style={{ background: 'var(--color-surface-2)' }}>
-          <IcoClock />
-        </div>
-        <p className="text-[13px]" style={{ color: 'var(--color-text-muted)' }}>No classes on {day}</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-2">
-      {dayRows.map(r => {
-        const p = palette(r.courseCode);
-        return (
-          <div key={r.studentSectionId}
-            className="card flex items-stretch gap-0 overflow-hidden hover:-translate-y-px transition-transform duration-150">
-            {/* Time sidebar */}
-            <div className="flex flex-col items-center justify-center px-4 py-4 shrink-0"
-              style={{ background: p.bg, minWidth: '76px' }}>
-              <p className="text-[10.5px] font-bold" style={{ color: p.text }}>
-                {fmt12(r.timeStart)}
-              </p>
-              <div className="w-px h-3 my-1" style={{ background: p.border, opacity: 0.5 }} />
-              <p className="text-[10.5px]" style={{ color: p.text, opacity: 0.75 }}>
-                {fmt12(r.timeEnd)}
-              </p>
-            </div>
-            {/* Left accent */}
-            <div className="w-1 shrink-0" style={{ background: p.border }} />
-            {/* Content */}
-            <div className="flex-1 px-4 py-3">
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <div>
-                  <span className="text-[10.5px] font-bold px-2 py-0.5 rounded-md mr-2"
-                    style={{ background: p.bg, color: p.text }}>
-                    {r.courseCode}
-                  </span>
-                  {r.source === 'enlisted' && (
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                      style={{ background: '#fff8e6', color: '#92620a' }}>
-                      Enlisted
-                    </span>
-                  )}
-                  <p className="text-[13px] font-semibold mt-1" style={{ color: 'var(--color-text)' }}>
-                    {r.courseTitle}
-                  </p>
-                </div>
-                <span className="text-[11.5px] font-bold shrink-0 px-2 py-0.5 rounded-lg"
-                  style={{ background: p.bg, color: p.text }}>
-                  {r.units.toFixed(1)}u
-                </span>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1">
-                <div className="flex items-center gap-1.5 text-[12px]" style={{ color: 'var(--color-text-secondary)' }}>
-                  <IcoRoom />{r.roomNumber}
-                </div>
-                <div className="flex items-center gap-1.5 text-[12px]" style={{ color: 'var(--color-text-secondary)' }}>
-                  <IcoBldg />{r.building}
-                </div>
-                <div className="flex items-center gap-1.5 text-[12px]" style={{ color: 'var(--color-text-secondary)' }}>
-                  <IcoUser />{r.instructorFirst} {r.instructorLast}
-                </div>
-              </div>
-              <p className="text-[11px] mt-1.5" style={{ color: 'var(--color-text-muted)' }}>
-                {r.sectionName} · {r.instructorDept}
-              </p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 // ─────────────────────────────────────────────────────────────
 // Page
 // ─────────────────────────────────────────────────────────────
 export default function StudentSchedulePage() {
   const [view,      setView]      = useState<ViewMode>('list');
   const [filterDay, setFilterDay] = useState<FilterDay>('All');
-  const [activeDay, setActiveDay] = useState<DayOfWeek>('Monday');
   const [search,    setSearch]    = useState('');
 
   // Derive distinct days that have classes
@@ -573,11 +480,27 @@ export default function StudentSchedulePage() {
         r.courseCode.toLowerCase().includes(q) ||
         r.courseTitle.toLowerCase().includes(q) ||
         `${r.instructorFirst} ${r.instructorLast}`.toLowerCase().includes(q) ||
-        r.roomNumber.toLowerCase().includes(q),
+        r.roomNumber.toLowerCase().includes(q)
       );
     }
     return g;
   }, [grouped, filterDay, search]);
+
+  // Filtered raw rows specifically for the Timetable view
+  const filteredRawRows = useMemo(() => {
+    let r = SCHEDULE_DATA;
+    if (filterDay !== 'All') r = r.filter(x => x.dayOfWeek === filterDay);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      r = r.filter(x => 
+        x.courseCode.toLowerCase().includes(q) ||
+        x.courseTitle.toLowerCase().includes(q) ||
+        `${x.instructorFirst} ${x.instructorLast}`.toLowerCase().includes(q) ||
+        x.roomNumber.toLowerCase().includes(q)
+      );
+    }
+    return r;
+  }, [filterDay, search]);
 
   const initials = SESSION.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
@@ -596,13 +519,6 @@ export default function StudentSchedulePage() {
             </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            {SESSION.isIrregular && (
-              <Link href="/student/enlistments"
-                className="btn btn-outline text-[12.5px]"
-                style={{ padding: '7px 14px' }}>
-                My Enlistments
-              </Link>
-            )}
             <button
               onClick={() => window.print()}
               className="btn btn-ghost text-[12.5px] flex items-center gap-1.5"
@@ -658,7 +574,8 @@ export default function StudentSchedulePage() {
               placeholder="Search subject, instructor…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              style={{ paddingLeft: '2.25rem', paddingRight: '0.75rem', fontSize: '13px', height: '36px' }}
+              className="w-full rounded-lg border outline-none transition-all"
+              style={{ paddingLeft: '2.25rem', paddingRight: '0.75rem', fontSize: '13px', height: '36px', borderColor: 'var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text)' }}
             />
           </div>
 
@@ -708,58 +625,22 @@ export default function StudentSchedulePage() {
                   No classes found
                 </p>
                 <p className="text-[12.5px]" style={{ color: 'var(--color-text-muted)' }}>
-                  Try adjusting your filters.
+                  Try adjusting your search or day filters.
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredGrouped.map(r => (
-                  <SubjectCard key={`${r.courseCode}-${r.sectionId}`} row={r} />
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {filteredGrouped.map((row, idx) => (
+                  <SubjectCard key={`${row.courseCode}-${idx}`} row={row} />
                 ))}
               </div>
             )}
           </>
         ) : (
-          <div className="card">
-            <div className="card-body pb-2">
-              {/* Day tabs for week view */}
-              <div className="flex gap-1.5 mb-4 flex-wrap">
-                {classDays.map(d => (
-                  <button key={d}
-                    onClick={() => setActiveDay(d)}
-                    className="text-[12px] font-semibold px-4 py-1.5 rounded-lg transition-all duration-150"
-                    style={activeDay === d
-                      ? { background: 'var(--color-primary)', color: '#fff' }
-                      : { background: 'var(--color-surface-2)', color: 'var(--color-text-secondary)' }}>
-                    {d}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Toggle between timetable and per-day list */}
-            <div className="px-6 pb-6">
-              <div className="flex justify-end mb-3">
-                <span className="text-[12px]" style={{ color: 'var(--color-text-muted)' }}>
-                  {SCHEDULE_DATA.filter(r => r.dayOfWeek === activeDay).length} class(es) on {activeDay}
-                </span>
-              </div>
-              <DayListView rows={SCHEDULE_DATA} day={activeDay} />
-            </div>
+          <div className="card p-0 overflow-hidden">
+            <WeekGrid rows={filteredRawRows} />
           </div>
         )}
-
-        {/* ── Footer notice ── */}
-        <div className="mt-5 flex items-start gap-2.5 px-4 py-3 rounded-xl border"
-          style={{ background: 'var(--color-primary-muted)', borderColor: 'rgba(34,160,80,.2)' }}>
-          <span className="shrink-0 mt-0.5" style={{ color: 'var(--color-primary)' }}><IcoInfo /></span>
-          <p className="text-[12px] leading-relaxed" style={{ color: 'var(--color-primary)' }}>
-            Your schedule is assigned by the Administrator and is <strong>read-only</strong>.
-            {SESSION.isIrregular
-              ? ' Enlisted sections (marked "Enlisted") were added via instructor-approved enlistment requests.'
-              : ' Contact your administrator for any schedule changes.'}
-          </p>
-        </div>
 
       </div>
     </AppShell>
