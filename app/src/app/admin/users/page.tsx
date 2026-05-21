@@ -137,45 +137,72 @@ export default function AdminUsersPage() {
                 </div>
 
                 {/* Filters */}
-                <div className="card card-body mb-4 flex flex-wrap gap-3 items-center" style={{ padding: "14px 18px" }}>
+                <div className="card card-body mb-4 flex flex-col md:flex-row flex-wrap gap-3 md:items-center" style={{ padding: "14px 18px" }}>
                     {/* Search */}
-                    <div className="relative flex-1" style={{ minWidth: "200px" }}>
+                    <div className="relative w-full md:flex-1" style={{ minWidth: "200px" }}>
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--color-text-muted)" }}>
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" /></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                                <path d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
+                            </svg>
                         </span>
                         <input
                             type="search"
                             placeholder="Search by name, email, or ID…"
                             value={search}
                             onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+                            className="w-full rounded border border-gray-300" /* Added w-full so it fills the flex-1 wrapper */
                             style={{ paddingLeft: "2.25rem", fontSize: "13px", height: "38px" }}
                         />
                     </div>
 
-                    <select value={roleFilter} onChange={(e) => { setRoleFilter(e.target.value as Role | "All"); setCurrentPage(1); }} style={{ fontSize: "13px", height: "38px" }}>
-                        <option value="All">All Roles</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Instructor">Instructor</option>
-                        <option value="Student">Student</option>
-                    </select>
+                    {/* Filters Wrapper (Keeps dropdowns grouped together nicely) */}
+                    <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        <select
+                            className="w-full sm:w-auto rounded border border-gray-300 px-2"
+                            value={roleFilter}
+                            onChange={(e) => { setRoleFilter(e.target.value as "All" | "Admin" | "Instructor" | "Student"); setCurrentPage(1); }}
+                            style={{ fontSize: "13px", height: "38px" }}
+                        >
+                            <option value="All">All Roles</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Instructor">Instructor</option>
+                            <option value="Student">Student</option>
+                        </select>
 
-                    <select value={deptFilter} onChange={(e) => { setDeptFilter(e.target.value === "All" ? "All" : Number(e.target.value)); setCurrentPage(1); }} style={{ fontSize: "13px", height: "38px", maxWidth: "200px" }}>
-                        <option value="All">All Departments</option>
-                        {departments.map((d) => <option key={d.id} value={d.id}>{d.code} — {d.name}</option>)}
-                    </select>
+                        <select
+                            className="w-full sm:w-auto rounded border border-gray-300 px-2"
+                            value={deptFilter}
+                            onChange={(e) => { setDeptFilter(e.target.value === "All" ? "All" : Number(e.target.value)); setCurrentPage(1); }}
+                            style={{ fontSize: "13px", height: "38px", maxWidth: "200px" }}
+                        >
+                            <option value="All">All Departments</option>
+                            {departments.map((d) => <option key={d.id} value={d.id}>{d.code} — {d.name}</option>)}
+                        </select>
 
-                    <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value as "All" | "Active" | "Inactive"); setCurrentPage(1); }} style={{ fontSize: "13px", height: "38px" }}>
-                        <option value="All">All Status</option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                    </select>
+                        <select
+                            className="w-full sm:w-auto rounded border border-gray-300 px-2"
+                            value={statusFilter}
+                            onChange={(e) => { setStatusFilter(e.target.value as "All" | "Active" | "Inactive"); setCurrentPage(1); }}
+                            style={{ fontSize: "13px", height: "38px" }}
+                        >
+                            <option value="All">All Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
 
-                    {hasFilters && (
-                        <button onClick={reset} className="flex items-center gap-1 text-[12.5px] font-medium transition-colors" style={{ color: "var(--color-error)", background: "none", border: "none" }}>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
-                            Clear
-                        </button>
-                    )}
+                        {hasFilters && (
+                            <button
+                                onClick={reset}
+                                className="flex items-center gap-1 text-[12.5px] font-medium transition-colors w-full sm:w-auto justify-center sm:justify-start"
+                                style={{ color: "var(--color-error)", background: "none", border: "none" }}
+                            >
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                                    <path d="M18 6L6 18M6 6l12 12" />
+                                </svg>
+                                Clear
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {/* Table */}

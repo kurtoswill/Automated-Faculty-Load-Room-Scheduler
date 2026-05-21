@@ -351,7 +351,7 @@ export default function AdminUserDetailPage() {
 
                     {/* ── Identity card ── */}
                     <section className="card">
-                        <div className="h-2 bg-gradient-to-r from-primary via-primary-dark to-accent" />
+                        <div className="h-2 bg-gradient-to-r from-primary-dark via-primary to-primary-light" />
                         <div className="card-body flex flex-col sm:flex-row gap-5 items-start sm:items-center">
                             <div className="relative flex-shrink-0">
                                 <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center shadow-md">

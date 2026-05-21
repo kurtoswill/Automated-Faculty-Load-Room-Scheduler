@@ -122,7 +122,7 @@ function InputField({
           transition-all duration-150 outline-none
           ${disabled
                         ? "bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed"
-                        : "bg-white border-slate-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
+                        : "bg-white border-slate-200 focus:border-border-focus focus:ring-2 focus:ring-primary-muted"
                     }
         `}
             />
@@ -215,21 +215,21 @@ export default function ProfilePage() {
                 {/* ── Identity Card ── */}
                 <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
 
-                    {/* Color band */}
-                    <div className="h-2 bg-gradient-to-r from-slate-700 via-slate-600 to-amber-400" />
+                    {/* Color band - UPDATED to use brand tokens */}
+                    <div className="h-2 bg-gradient-to-r from-primary-dark via-primary to-primary-light" />
 
                     <div className="p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
 
-                        {/* Avatar */}
+                        {/* Avatar - UPDATED background */}
                         <div className="relative flex-shrink-0">
-                            <div className="w-20 h-20 rounded-2xl bg-slate-800 flex items-center justify-center shadow-md">
+                            <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center shadow-md">
                                 <span className="text-2xl font-bold tracking-tight text-white">
                                     {getInitials(firstName, lastName)}
                                 </span>
                             </div>
-                            {/* Active indicator */}
+                            {/* Active indicator - UPDATED background */}
                             {user.is_active && (
-                                <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white" />
+                                <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-success rounded-full border-2 border-white" />
                             )}
                         </div>
 
@@ -349,7 +349,7 @@ export default function ProfilePage() {
                         </div>
                     )}
 
-                    {/* Actions */}
+                    {/* Actions - UPDATED styling */}
                     <div className="mt-6 flex flex-wrap items-center gap-3">
                         <button
                             onClick={handleSave}
@@ -358,8 +358,8 @@ export default function ProfilePage() {
                 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold
                 transition-all duration-150
                 ${isDirty && !isSaving
-                                    ? "bg-slate-800 text-white hover:bg-amber-500 hover:text-slate-900 shadow-sm"
-                                    : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                    ? "bg-primary text-white hover:bg-primary-dark shadow-sm"
+                                    : "bg-surface-2 text-text-muted cursor-not-allowed"
                                 }
               `}
                         >
@@ -385,13 +385,13 @@ export default function ProfilePage() {
                             </button>
                         )}
 
-                        {/* Change password link */}
-                        <a
+                        {/* Change password link - UPDATED styling */}
+                        <Link
                             href="/change-password"
-                            className="ml-auto text-sm text-amber-600 hover:text-amber-700 font-medium transition-colors"
+                            className="ml-auto text-sm text-primary hover:text-primary-dark font-medium transition-colors"
                         >
                             Change Password →
-                        </a>
+                        </Link>
                     </div>
                 </section>
 

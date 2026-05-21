@@ -294,151 +294,151 @@ export default function ChangePasswordPage() {
 
                 {/* ── Page Header ── */}
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                        Change Password
-                    </h1>
-                    <p className="text-sm text-slate-500 mt-1">
-                        Update your account password. You'll need your current password to proceed.
-                    </p>
-                </div>
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+                    Change Password
+                </h1>
+                <p className="text-sm text-slate-500 mt-1">
+                    Update your account password. You'll need your current password to proceed.
+                </p>
+            </div>
 
-                {/* ── Success State ── */}
-                {submitStatus === "success" ? (
-                    <div className="bg-white rounded-2xl border border-emerald-200 shadow-sm p-8 flex flex-col items-center text-center gap-4">
-                        <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
-                            <svg className="w-7 h-7 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-bold text-slate-900">Password Updated</h2>
-                            <p className="text-sm text-slate-500 mt-1">
-                                Your password has been changed successfully. Use your new password the next time you log in.
-                            </p>
-                        </div>
-                        <a
-                            href="/profile"
-                            className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800 text-white text-sm font-semibold hover:bg-amber-500 hover:text-slate-900 transition-all"
-                        >
-                            Back to Profile
-                        </a>
+            {/* ── Success State ── */}
+            {submitStatus === "success" ? (
+                <div className="bg-surface rounded-2xl border border-success/30 shadow-sm p-8 flex flex-col items-center text-center gap-4">
+                    <div className="w-14 h-14 rounded-full bg-primary-muted border border-success/20 flex items-center justify-center">
+                        <svg className="w-7 h-7 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
                     </div>
-                ) : (
+                    <div>
+                        <h2 className="text-lg font-bold text-slate-900">Password Updated</h2>
+                        <p className="text-sm text-slate-500 mt-1">
+                            Your password has been changed successfully. Use your new password the next time you log in.
+                        </p>
+                    </div>
+                    <a
+                        href="/profile"
+                        className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-all"
+                    >
+                        Back to Profile
+                    </a>
+                </div>
+            ) : (
 
-                    /* ── Form Card ── */
-                    <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="h-1 bg-gradient-to-r from-slate-700 via-slate-600 to-amber-400" />
+                /* ── Form Card ── */
+                <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="h-1 bg-gradient-to-r from-primary-dark via-primary to-primary-light" />
 
-                        <div className="p-6 sm:p-8 flex flex-col gap-6">
+                    <div className="p-6 sm:p-8 flex flex-col gap-6">
 
-                            {/* Current password */}
+                        {/* Current password */}
+                        <PasswordInput
+                            label="Current Password"
+                            id="current_password"
+                            value={form.current_password}
+                            onChange={(v) => update("current_password", v)}
+                            error={errors.current_password}
+                            autoComplete="current-password"
+                        />
+
+                        <div className="border-t border-slate-100" />
+
+                        {/* New password + strength meter */}
+                        <div className="flex flex-col gap-1">
                             <PasswordInput
-                                label="Current Password"
-                                id="current_password"
-                                value={form.current_password}
-                                onChange={(v) => update("current_password", v)}
-                                error={errors.current_password}
-                                autoComplete="current-password"
-                            />
-
-                            <div className="border-t border-slate-100" />
-
-                            {/* New password + strength meter */}
-                            <div className="flex flex-col gap-1">
-                                <PasswordInput
-                                    label="New Password"
-                                    id="new_password"
-                                    value={form.new_password}
-                                    onChange={(v) => update("new_password", v)}
-                                    error={errors.new_password}
-                                    autoComplete="new-password"
-                                />
-                                <StrengthMeter password={form.new_password} />
-                            </div>
-
-                            {/* Confirm password */}
-                            <PasswordInput
-                                label="Confirm New Password"
-                                id="confirm_password"
-                                value={form.confirm_password}
-                                onChange={(v) => update("confirm_password", v)}
-                                error={errors.confirm_password}
+                                label="New Password"
+                                id="new_password"
+                                value={form.new_password}
+                                onChange={(v) => update("new_password", v)}
+                                error={errors.new_password}
                                 autoComplete="new-password"
                             />
+                            <StrengthMeter password={form.new_password} />
+                        </div>
 
-                            {/* Requirements checklist */}
-                            <ul className="flex flex-col gap-1.5 bg-slate-50 rounded-xl border border-slate-100 px-4 py-3">
-                                <RequirementItem
-                                    met={newPw.length >= 8}
-                                    label="At least 8 characters"
-                                />
-                                <RequirementItem
-                                    met={/[A-Z]/.test(newPw) && /[a-z]/.test(newPw)}
-                                    label="Upper and lowercase letters"
-                                />
-                                <RequirementItem
-                                    met={/\d/.test(newPw)}
-                                    label="At least one number"
-                                />
-                                <RequirementItem
-                                    met={/[^A-Za-z0-9]/.test(newPw)}
-                                    label="At least one special character"
-                                />
-                            </ul>
+                        {/* Confirm password */}
+                        <PasswordInput
+                            label="Confirm New Password"
+                            id="confirm_password"
+                            value={form.confirm_password}
+                            onChange={(v) => update("confirm_password", v)}
+                            error={errors.confirm_password}
+                            autoComplete="new-password"
+                        />
 
-                            {/* API error banner */}
-                            {submitStatus === "error" && apiError && (
-                                <div className="flex items-start gap-2 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-                                    <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12A9 9 0 113 12a9 9 0 0118 0z" />
-                                    </svg>
-                                    {apiError}
-                                </div>
-                            )}
+                        {/* Requirements checklist */}
+                        <ul className="flex flex-col gap-1.5 bg-slate-50 rounded-xl border border-slate-100 px-4 py-3">
+                            <RequirementItem
+                                met={newPw.length >= 8}
+                                label="At least 8 characters"
+                            />
+                            <RequirementItem
+                                met={/[A-Z]/.test(newPw) && /[a-z]/.test(newPw)}
+                                label="Upper and lowercase letters"
+                            />
+                            <RequirementItem
+                                met={/\d/.test(newPw)}
+                                label="At least one number"
+                            />
+                            <RequirementItem
+                                met={/[^A-Za-z0-9]/.test(newPw)}
+                                label="At least one special character"
+                            />
+                        </ul>
 
-                            {/* Actions */}
-                            <div className="flex items-center gap-3 pt-1">
-                                <button
-                                    onClick={handleSubmit}
-                                    disabled={isSubmitting}
-                                    className={`
+                        {/* API error banner */}
+                        {submitStatus === "error" && apiError && (
+                            <div className="flex items-start gap-2 text-sm text-error bg-error-light border border-error/30 rounded-lg px-4 py-3">
+                                <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12A9 9 0 113 12a9 9 0 0118 0z" />
+                                </svg>
+                                {apiError}
+                            </div>
+                        )}
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-3 pt-1">
+                            <button
+                                onClick={handleSubmit}
+                                disabled={isSubmitting}
+                                className={`
                     flex-1 sm:flex-none inline-flex items-center justify-center gap-2
                     px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-150
                     ${isSubmitting
-                                            ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                                            : "bg-slate-800 text-white hover:bg-amber-500 hover:text-slate-900 shadow-sm"
-                                        }
+                                        ? "bg-surface-2 text-text-muted cursor-not-allowed"
+                                        : "bg-primary text-white hover:bg-primary-dark shadow-sm"
+                                    }
                   `}
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                                            </svg>
-                                            Updating…
-                                        </>
-                                    ) : (
-                                        "Update Password"
-                                    )}
-                                </button>
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                        </svg>
+                                        Updating…
+                                    </>
+                                ) : (
+                                    "Update Password"
+                                )}
+                            </button>
 
-                                <a
-                                    href="/profile"
-                                    className="text-sm text-slate-500 hover:text-slate-800 transition-colors"
-                                >
-                                    Cancel
-                                </a>
-                            </div>
+                            <a
+                                href="/profile"
+                                className="text-sm text-slate-500 hover:text-primary-dark transition-colors"
+                            >
+                                Cancel
+                            </a>
                         </div>
-                    </section>
-                )}
+                    </div>
+                </section>
+            )}
 
-                {/* ── Security note ── */}
-                <p className="text-xs text-slate-400 text-center px-4">
-                    For security, you will not be automatically logged out after changing your password.
-                    If you suspect unauthorized access, contact your Administrator immediately.
-                </p>
+            {/* ── Security note ── */}
+            <p className="text-xs text-text-muted text-center px-4">
+                For security, you will not be automatically logged out after changing your password.
+                If you suspect unauthorized access, contact your Administrator immediately.
+            </p>
 
             </main>
         </div>
