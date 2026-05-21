@@ -392,7 +392,7 @@ export default function InstructorDashboard() {
             ))}
           </div>
 
-          <Link href="/faculty-load"
+          <Link href="/instructor/faculty-load"
             className="btn btn-outline btn-full text-[12.5px] mt-1"
             style={{ padding: '8px 14px' }}>
             View Full Load Summary
@@ -406,7 +406,7 @@ export default function InstructorDashboard() {
               <h2 className="text-[14px] font-semibold" style={{ color: 'var(--color-text)' }}>Today's Classes</h2>
               <p className="text-[11.5px]" style={{ color: 'var(--color-text-muted)' }}>Thursday, May 15</p>
             </div>
-            <Link href="/schedule" className="flex items-center gap-1 text-[12px] font-medium"
+            <Link href="/instructor/schedule" className="flex items-center gap-1 text-[12px] font-medium"
               style={{ color: 'var(--color-primary-light)' }}>
               Full schedule <IcoArrow />
             </Link>

@@ -121,7 +121,7 @@ export default function InstructorFacultyLoadPage() {
 
     return (
         <AppShell role="instructor" userName="Juan Dela Cruz" pageTitle="My Faculty Load">
-            <div className="animate-fade-in space-y-6 max-w-5xl">
+            <div className="animate-fade-in space-y-6 max-w-full">
 
                 {/* ── Header ── */}
                 <div>

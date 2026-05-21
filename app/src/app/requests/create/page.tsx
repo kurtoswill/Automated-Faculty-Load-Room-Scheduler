@@ -25,59 +25,59 @@ import AppShell from '@/components/Navbar';
 // Types
 // ─────────────────────────────────────────────────────────────
 type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
-type Step      = 1 | 2 | 3;
+type Step = 1 | 2 | 3;
 
 interface Section {
-  id:          number;
-  courseCode:  string;
+  id: number;
+  courseCode: string;
   courseTitle: string;
-  units:       number;
+  units: number;
   sectionName: string;
-  semester:    string;
-  yearLevel:   number;
+  semester: string;
+  yearLevel: number;
   expectedStudents: number;
-  dayOfWeek:   DayOfWeek;
-  timeStart:   string;
-  timeEnd:     string;
+  dayOfWeek: DayOfWeek;
+  timeStart: string;
+  timeEnd: string;
 }
 
 interface Room {
-  id:         number;
+  id: number;
   roomNumber: string;
-  building:   string;
-  capacity:   number;
-  typeName:   string;
-  isAvailable:boolean;
+  building: string;
+  capacity: number;
+  typeName: string;
+  isAvailable: boolean;
 }
 
 interface ConflictResult {
-  hasRoomConflict:       boolean;
+  hasRoomConflict: boolean;
   hasInstructorConflict: boolean;
-  exceedsCapacity:       boolean;
-  exceedsLoadLimit:      boolean;
-  message:               string;
+  exceedsCapacity: boolean;
+  exceedsLoadLimit: boolean;
+  message: string;
 }
 
 // ─────────────────────────────────────────────────────────────
 // Mock data
 // ─────────────────────────────────────────────────────────────
 const MY_SECTIONS: Section[] = [
-  { id: 1,  courseCode: 'CS 3101', courseTitle: 'Data Structures and Algorithms', units: 3.0, sectionName: 'BSCS 3-A', semester: '2025-2026 1st Sem', yearLevel: 3, expectedStudents: 38, dayOfWeek: 'Monday',    timeStart: '07:30', timeEnd: '09:00' },
-  { id: 2,  courseCode: 'CS 3101', courseTitle: 'Data Structures and Algorithms', units: 3.0, sectionName: 'BSCS 3-A', semester: '2025-2026 1st Sem', yearLevel: 3, expectedStudents: 38, dayOfWeek: 'Wednesday',  timeStart: '07:30', timeEnd: '09:00' },
-  { id: 3,  courseCode: 'CS 3101', courseTitle: 'Data Structures and Algorithms', units: 3.0, sectionName: 'BSCS 3-A', semester: '2025-2026 1st Sem', yearLevel: 3, expectedStudents: 38, dayOfWeek: 'Friday',     timeStart: '07:30', timeEnd: '09:00' },
-  { id: 4,  courseCode: 'CS 4101', courseTitle: 'Software Engineering',            units: 3.0, sectionName: 'BSCS 4-A', semester: '2025-2026 1st Sem', yearLevel: 4, expectedStudents: 25, dayOfWeek: 'Tuesday',   timeStart: '13:00', timeEnd: '14:30' },
-  { id: 5,  courseCode: 'CS 4101', courseTitle: 'Software Engineering',            units: 3.0, sectionName: 'BSCS 4-A', semester: '2025-2026 1st Sem', yearLevel: 4, expectedStudents: 25, dayOfWeek: 'Thursday',  timeStart: '13:00', timeEnd: '14:30' },
+  { id: 1, courseCode: 'CS 3101', courseTitle: 'Data Structures and Algorithms', units: 3.0, sectionName: 'BSCS 3-A', semester: '2025-2026 1st Sem', yearLevel: 3, expectedStudents: 38, dayOfWeek: 'Monday', timeStart: '07:30', timeEnd: '09:00' },
+  { id: 2, courseCode: 'CS 3101', courseTitle: 'Data Structures and Algorithms', units: 3.0, sectionName: 'BSCS 3-A', semester: '2025-2026 1st Sem', yearLevel: 3, expectedStudents: 38, dayOfWeek: 'Wednesday', timeStart: '07:30', timeEnd: '09:00' },
+  { id: 3, courseCode: 'CS 3101', courseTitle: 'Data Structures and Algorithms', units: 3.0, sectionName: 'BSCS 3-A', semester: '2025-2026 1st Sem', yearLevel: 3, expectedStudents: 38, dayOfWeek: 'Friday', timeStart: '07:30', timeEnd: '09:00' },
+  { id: 4, courseCode: 'CS 4101', courseTitle: 'Software Engineering', units: 3.0, sectionName: 'BSCS 4-A', semester: '2025-2026 1st Sem', yearLevel: 4, expectedStudents: 25, dayOfWeek: 'Tuesday', timeStart: '13:00', timeEnd: '14:30' },
+  { id: 5, courseCode: 'CS 4101', courseTitle: 'Software Engineering', units: 3.0, sectionName: 'BSCS 4-A', semester: '2025-2026 1st Sem', yearLevel: 4, expectedStudents: 25, dayOfWeek: 'Thursday', timeStart: '13:00', timeEnd: '14:30' },
 ];
 
 const ROOMS: Room[] = [
-  { id: 1,  roomNumber: 'CS-101',   building: 'New Academic Building', capacity: 45, typeName: 'Lecture',    isAvailable: true  },
-  { id: 2,  roomNumber: 'CS-202',   building: 'New Academic Building', capacity: 40, typeName: 'Lecture',    isAvailable: true  },
-  { id: 3,  roomNumber: 'CS-204',   building: 'New Academic Building', capacity: 40, typeName: 'Lecture',    isAvailable: true  },
-  { id: 4,  roomNumber: 'ICT-Lab1', building: 'ICT Building',          capacity: 30, typeName: 'Laboratory', isAvailable: true  },
-  { id: 5,  roomNumber: 'ICT-Lab2', building: 'ICT Building',          capacity: 30, typeName: 'Laboratory', isAvailable: true  },
-  { id: 6,  roomNumber: 'ICT-Lab3', building: 'ICT Building',          capacity: 25, typeName: 'Laboratory', isAvailable: false },
-  { id: 7,  roomNumber: 'GE-305',   building: 'Main Building',         capacity: 50, typeName: 'Lecture',    isAvailable: true  },
-  { id: 8,  roomNumber: 'SEM-1',    building: 'Admin Building',        capacity: 20, typeName: 'Seminar',    isAvailable: true  },
+  { id: 1, roomNumber: 'CS-101', building: 'New Academic Building', capacity: 45, typeName: 'Lecture', isAvailable: true },
+  { id: 2, roomNumber: 'CS-202', building: 'New Academic Building', capacity: 40, typeName: 'Lecture', isAvailable: true },
+  { id: 3, roomNumber: 'CS-204', building: 'New Academic Building', capacity: 40, typeName: 'Lecture', isAvailable: true },
+  { id: 4, roomNumber: 'ICT-Lab1', building: 'ICT Building', capacity: 30, typeName: 'Laboratory', isAvailable: true },
+  { id: 5, roomNumber: 'ICT-Lab2', building: 'ICT Building', capacity: 30, typeName: 'Laboratory', isAvailable: true },
+  { id: 6, roomNumber: 'ICT-Lab3', building: 'ICT Building', capacity: 25, typeName: 'Laboratory', isAvailable: false },
+  { id: 7, roomNumber: 'GE-305', building: 'Main Building', capacity: 50, typeName: 'Lecture', isAvailable: true },
+  { id: 8, roomNumber: 'SEM-1', building: 'Admin Building', capacity: 20, typeName: 'Seminar', isAvailable: true },
 ];
 
 // Simulated conflict check (would be a server action / API call in production)
@@ -90,10 +90,10 @@ function checkConflicts(section: Section, room: Room): ConflictResult {
   const instrConflict = section.dayOfWeek === 'Thursday' &&
     section.timeStart === '13:00' && section.courseCode === 'CS 3101';
 
-  if (roomBusy)     return { hasRoomConflict: true,  hasInstructorConflict: false, exceedsCapacity: false, exceedsLoadLimit: false, message: `${room.roomNumber} already has an approved booking on ${section.dayOfWeek} at that time.` };
-  if (instrConflict) return { hasRoomConflict: false, hasInstructorConflict: true,  exceedsCapacity: false, exceedsLoadLimit: false, message: 'You already have a confirmed class at that day and time slot.' };
-  if (exceedsCap)    return { hasRoomConflict: false, hasInstructorConflict: false, exceedsCapacity: true,  exceedsLoadLimit: false, message: `Expected ${section.expectedStudents} students exceeds room capacity of ${room.capacity}.` };
-  return            { hasRoomConflict: false, hasInstructorConflict: false, exceedsCapacity: false, exceedsLoadLimit: false, message: '' };
+  if (roomBusy) return { hasRoomConflict: true, hasInstructorConflict: false, exceedsCapacity: false, exceedsLoadLimit: false, message: `${room.roomNumber} already has an approved booking on ${section.dayOfWeek} at that time.` };
+  if (instrConflict) return { hasRoomConflict: false, hasInstructorConflict: true, exceedsCapacity: false, exceedsLoadLimit: false, message: 'You already have a confirmed class at that day and time slot.' };
+  if (exceedsCap) return { hasRoomConflict: false, hasInstructorConflict: false, exceedsCapacity: true, exceedsLoadLimit: false, message: `Expected ${section.expectedStudents} students exceeds room capacity of ${room.capacity}.` };
+  return { hasRoomConflict: false, hasInstructorConflict: false, exceedsCapacity: false, exceedsLoadLimit: false, message: '' };
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -105,16 +105,16 @@ const Ico = ({ d, d2, size = 15 }: { d: string; d2?: string; size?: number }) =>
     <path d={d} />{d2 && <path d={d2} />}
   </svg>
 );
-const IcoCheck   = () => <Ico d="M20 6L9 17l-5-5" />;
-const IcoAlert   = () => <Ico d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01" />;
-const IcoInfo    = () => <Ico d="M12 2a10 10 0 100 20A10 10 0 0012 2zM12 16v-4M12 8h.01" />;
-const IcoRoom    = () => <Ico d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" d2="M9 21V12h6v9" />;
-const IcoUsers   = () => <Ico d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" d2="M9 11a4 4 0 100-8 4 4 0 000 8z" />;
-const IcoBook    = () => <Ico d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 014 17V4h16v13M4 19.5V21" />;
-const IcoClock   = () => <Ico d="M12 2a10 10 0 100 20A10 10 0 0012 2zM12 6v6l4 2" />;
-const IcoArrow   = () => <Ico d="M5 12h14M12 5l7 7-7 7" />;
-const IcoBack    = () => <Ico d="M19 12H5M12 19l-7-7 7-7" />;
-const IcoSend    = () => <Ico d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />;
+const IcoCheck = () => <Ico d="M20 6L9 17l-5-5" />;
+const IcoAlert = () => <Ico d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01" />;
+const IcoInfo = () => <Ico d="M12 2a10 10 0 100 20A10 10 0 0012 2zM12 16v-4M12 8h.01" />;
+const IcoRoom = () => <Ico d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" d2="M9 21V12h6v9" />;
+const IcoUsers = () => <Ico d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" d2="M9 11a4 4 0 100-8 4 4 0 000 8z" />;
+const IcoBook = () => <Ico d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 014 17V4h16v13M4 19.5V21" />;
+const IcoClock = () => <Ico d="M12 2a10 10 0 100 20A10 10 0 0012 2zM12 6v6l4 2" />;
+const IcoArrow = () => <Ico d="M5 12h14M12 5l7 7-7 7" />;
+const IcoBack = () => <Ico d="M19 12H5M12 19l-7-7 7-7" />;
+const IcoSend = () => <Ico d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />;
 
 function fmt12(t: string) {
   if (!t) return '';
@@ -128,7 +128,7 @@ function fmt12(t: string) {
 function StepBar({ current }: { current: Step }) {
   const steps = [
     { n: 1 as Step, label: 'Select Section' },
-    { n: 2 as Step, label: 'Choose Room'    },
+    { n: 2 as Step, label: 'Choose Room' },
     { n: 3 as Step, label: 'Review & Submit' },
   ];
   return (
@@ -179,7 +179,7 @@ function Step1({
 
       <div className="flex flex-col gap-3">
         {Object.entries(grouped).map(([key, rows]) => {
-          const rep  = rows[0];
+          const rep = rows[0];
           const days = rows.map(r => r.dayOfWeek.slice(0, 3)).join(' / ');
           const isSelected = selected && rows.some(r => r.id === selected.id);
           return (
@@ -188,9 +188,9 @@ function Step1({
               onClick={() => onSelect(rep)}
               className="text-left rounded-xl border p-4 transition-all duration-150"
               style={{
-                borderColor:  isSelected ? 'var(--color-primary-light)' : 'var(--color-border)',
-                background:   isSelected ? 'var(--color-primary-muted)' : 'var(--color-surface)',
-                outline:      isSelected ? '2px solid var(--color-primary-light)' : 'none',
+                borderColor: isSelected ? 'var(--color-primary-light)' : 'var(--color-border)',
+                background: isSelected ? 'var(--color-primary-muted)' : 'var(--color-surface)',
+                outline: isSelected ? '2px solid var(--color-primary-light)' : 'none',
                 outlineOffset: '2px',
               }}>
               <div className="flex items-start justify-between gap-2 mb-2">
@@ -262,11 +262,11 @@ function Step2({
   );
 
   const TYPE_COLORS: Record<string, { bg: string; color: string }> = {
-    Lecture:    { bg: '#e8f5ee', color: '#1a7a3c' },
+    Lecture: { bg: '#e8f5ee', color: '#1a7a3c' },
     Laboratory: { bg: '#eef2ff', color: '#3730a3' },
-    Seminar:    { bg: '#fff8e6', color: '#92620a' },
-    AVR:        { bg: '#f0f9ff', color: '#0369a1' },
-    Gymnasium:  { bg: '#fdf4ff', color: '#6b21a8' },
+    Seminar: { bg: '#fff8e6', color: '#92620a' },
+    AVR: { bg: '#f0f9ff', color: '#0369a1' },
+    Gymnasium: { bg: '#fdf4ff', color: '#6b21a8' },
   };
 
   return (
@@ -299,9 +299,9 @@ function Step2({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {available.map(room => {
           const tc = TYPE_COLORS[room.typeName] ?? { bg: 'var(--color-surface-2)', color: 'var(--color-text-secondary)' };
-          const tooSmall  = room.capacity < section.expectedStudents;
+          const tooSmall = room.capacity < section.expectedStudents;
           const isSelected = selectedRoom?.id === room.id;
-          const conflict  = isSelected ? checkConflicts(section, room) : null;
+          const conflict = isSelected ? checkConflicts(section, room) : null;
 
           return (
             <button
@@ -310,11 +310,11 @@ function Step2({
               disabled={tooSmall}
               className="text-left rounded-xl border p-4 transition-all duration-150"
               style={{
-                borderColor:  isSelected ? 'var(--color-primary-light)' : tooSmall ? 'var(--color-border)' : 'var(--color-border)',
-                background:   isSelected ? 'var(--color-primary-muted)' : 'var(--color-surface)',
-                opacity:      tooSmall ? 0.5 : 1,
-                cursor:       tooSmall ? 'not-allowed' : 'pointer',
-                outline:      isSelected ? '2px solid var(--color-primary-light)' : 'none',
+                borderColor: isSelected ? 'var(--color-primary-light)' : tooSmall ? 'var(--color-border)' : 'var(--color-border)',
+                background: isSelected ? 'var(--color-primary-muted)' : 'var(--color-surface)',
+                opacity: tooSmall ? 0.5 : 1,
+                cursor: tooSmall ? 'not-allowed' : 'pointer',
+                outline: isSelected ? '2px solid var(--color-primary-light)' : 'none',
                 outlineOffset: '2px',
               }}>
               <div className="flex items-start justify-between gap-2 mb-2">
@@ -362,7 +362,7 @@ function Step2({
           className="btn btn-primary flex items-center gap-2"
           style={{
             opacity: (!selectedRoom || !!checkConflicts(section, selectedRoom!).message) ? 0.5 : 1,
-            cursor:  (!selectedRoom || !!checkConflicts(section, selectedRoom!).message) ? 'not-allowed' : 'pointer',
+            cursor: (!selectedRoom || !!checkConflicts(section, selectedRoom!).message) ? 'not-allowed' : 'pointer',
           }}>
           Review & Submit <IcoArrow />
         </button>
@@ -384,16 +384,16 @@ function Step3({
   submitting: boolean;
 }) {
   const rows = [
-    { label: 'Course Code',    value: section.courseCode },
-    { label: 'Course Title',   value: section.courseTitle },
-    { label: 'Section',        value: section.sectionName },
-    { label: 'Year Level',     value: `Year ${section.yearLevel}` },
-    { label: 'Day',            value: section.dayOfWeek },
-    { label: 'Time',           value: `${fmt12(section.timeStart)} – ${fmt12(section.timeEnd)}` },
+    { label: 'Course Code', value: section.courseCode },
+    { label: 'Course Title', value: section.courseTitle },
+    { label: 'Section', value: section.sectionName },
+    { label: 'Year Level', value: `Year ${section.yearLevel}` },
+    { label: 'Day', value: section.dayOfWeek },
+    { label: 'Time', value: `${fmt12(section.timeStart)} – ${fmt12(section.timeEnd)}` },
     { label: 'Expected Students', value: `${section.expectedStudents} / ${room.capacity} capacity` },
     { label: 'Room Requested', value: room.roomNumber },
-    { label: 'Building',       value: room.building },
-    { label: 'Room Type',      value: room.typeName },
+    { label: 'Building', value: room.building },
+    { label: 'Room Type', value: room.typeName },
   ];
 
   return (
@@ -455,18 +455,18 @@ function Step3({
 // ─────────────────────────────────────────────────────────────
 // Page: /requests/create
 // ─────────────────────────────────────────────────────────────
-export function CreateRequestPage() {
+export default function CreateRequestPage() {
   const router = useRouter();
   const params = useSearchParams();
   const prefilledRoomId = params.get('roomId') ? parseInt(params.get('roomId')!) : null;
 
-  const [step,        setStep]        = useState<Step>(1);
-  const [section,     setSection]     = useState<Section | null>(null);
-  const [room,        setRoom]        = useState<Room | null>(
+  const [step, setStep] = useState<Step>(1);
+  const [section, setSection] = useState<Section | null>(null);
+  const [room, setRoom] = useState<Room | null>(
     prefilledRoomId ? ROOMS.find(r => r.id === prefilledRoomId) ?? null : null,
   );
-  const [submitting,  setSubmitting]  = useState(false);
-  const [submitted,   setSubmitted]   = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   // Auto-advance to step 2 if room pre-filled from /rooms page
   useEffect(() => {
