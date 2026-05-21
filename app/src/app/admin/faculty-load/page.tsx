@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import AppShell from "@/components/Navbar";
 
@@ -97,12 +98,38 @@ function getLoadStatus(current: number, pending: number, max: number): { label: 
 }
 
 export default function AdminFacultyLoadPage() {
+    // ─── Filter State ─────────────────────────────────────────
+    const [searchTerm, setSearchTerm] = useState("");
+    const [deptFilter, setDeptFilter] = useState("All Departments");
+
+    // Top-level stats (calculated from all data)
     const atLimit = FACULTY_LOAD_DATA.filter((f) => f.current_units >= f.max_units).length;
     const nearLimit = FACULTY_LOAD_DATA.filter((f) => {
         const pct = ((f.current_units + f.pending_units) / f.max_units) * 100;
         return pct >= 80 && f.current_units < f.max_units;
     }).length;
     const noLoad = FACULTY_LOAD_DATA.filter((f) => f.current_units === 0 && f.pending_units === 0).length;
+
+    // Filtered data for the table
+    const filteredData = FACULTY_LOAD_DATA.filter((f) => {
+        const matchesSearch =
+            f.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            f.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            f.employee_id.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesDept = deptFilter === "All Departments" || f.dept === deptFilter;
+
+        return matchesSearch && matchesDept;
+    });
+
+    const hasFilters = searchTerm !== "" || deptFilter !== "All Departments";
+
+    function clearFilters() {
+        setSearchTerm("");
+        setDeptFilter("All Departments");
+    }
+
+    // Extract unique departments for the dropdown
+    const uniqueDepartments = Array.from(new Set(FACULTY_LOAD_DATA.map(f => f.dept)));
 
     return (
         <AppShell role="admin" userName="Admin User" pageTitle="Faculty Load Management">
@@ -127,19 +154,16 @@ export default function AdminFacultyLoadPage() {
                         value={String(FACULTY_LOAD_DATA.length)}
                         icon={<InstructorIcon />}
                     />
-
                     <StatCard
                         label="At Load Limit"
                         value={String(atLimit)}
                         icon={<LoadStatusIcon status="At Limit" />}
                     />
-
                     <StatCard
                         label="Near Limit (≥80%)"
                         value={String(nearLimit)}
                         icon={<LoadStatusIcon status="Near Limit" />}
                     />
-
                     <StatCard
                         label="No Load Assigned"
                         value={String(noLoad)}
@@ -151,8 +175,8 @@ export default function AdminFacultyLoadPage() {
                 <div className="card overflow-hidden">
                     <div className="px-6 py-4 border-b flex items-center justify-between gap-3 flex-wrap" style={{ borderColor: "var(--color-border)" }}>
                         <h2 className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>All Instructors</h2>
-                        <div className="flex gap-2 items-center">
-                            {/* Search placeholder */}
+                        <div className="flex gap-2 items-center flex-wrap">
+                            {/* Search */}
                             <div className="input-icon-wrapper">
                                 <span className="input-icon-left">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
@@ -160,22 +184,43 @@ export default function AdminFacultyLoadPage() {
                                 <input
                                     type="text"
                                     placeholder="Search instructor..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                     className="input-has-left-icon"
                                     style={{ width: "200px", padding: "7px 14px 7px 2.5rem" }}
-                                    disabled
                                 />
                             </div>
-                            {/* Dept filter placeholder */}
-                            <select disabled style={{ width: "130px", padding: "7px 14px" }}>
-                                <option>All Departments</option>
-                                <option>DCS</option>
-                                <option>DIT</option>
+                            
+                            {/* Dept filter */}
+                            <select 
+                                value={deptFilter}
+                                onChange={(e) => setDeptFilter(e.target.value)}
+                                style={{ width: "170px", padding: "7px 14px" }}
+                            >
+                                <option value="All Departments">All Departments</option>
+                                {uniqueDepartments.map(dept => (
+                                    <option key={dept} value={dept}>{dept}</option>
+                                ))}
                             </select>
+
+                            {/* Clear Filters */}
+                            {hasFilters && (
+                                <button 
+                                    onClick={clearFilters} 
+                                    className="flex items-center gap-1 text-[12.5px] font-medium transition-colors" 
+                                    style={{ color: "var(--color-error)", background: "none", border: "none" }}
+                                >
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                                        <path d="M18 6L6 18M6 6l12 12" />
+                                    </svg>
+                                    Clear
+                                </button>
+                            )}
                         </div>
                     </div>
 
                     <div className="overflow-x-auto">
-                        <table className="table-base">
+                        <table className="table-base w-full">
                             <thead>
                                 <tr>
                                     <th>Instructor</th>
@@ -189,84 +234,92 @@ export default function AdminFacultyLoadPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {FACULTY_LOAD_DATA.map((f) => {
-                                    const totalUnits = f.current_units + f.pending_units;
-                                    const unitsPct = Math.min((totalUnits / f.max_units) * 100, 100);
-                                    const status = getLoadStatus(f.current_units, f.pending_units, f.max_units);
-                                    return (
-                                        <tr key={f.id}>
-                                            <td>
-                                                <div>
-                                                    <p className="text-sm font-medium" style={{ color: "var(--color-text)" }}>
-                                                        {f.first_name} {f.last_name}
-                                                    </p>
-                                                    <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>
-                                                        {f.employee_id}
-                                                    </p>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span className="badge badge-blue">{f.dept}</span>
-                                            </td>
-                                            <td>
-                                                <p className="text-xs font-medium" style={{ color: "var(--color-text-secondary)" }}>
-                                                    {f.max_units} units / {f.max_classes} classes
-                                                </p>
-                                            </td>
-                                            <td style={{ minWidth: "160px" }}>
-                                                <div className="space-y-1">
-                                                    <div className="flex justify-between text-xs" style={{ color: "var(--color-text-secondary)" }}>
-                                                        <span>{f.current_units.toFixed(1)}{f.pending_units > 0 && <span style={{ color: "var(--color-accent)" }}> +{f.pending_units.toFixed(1)}</span>}</span>
-                                                        <span>{f.max_units.toFixed(1)}</span>
+                                {filteredData.length > 0 ? (
+                                    filteredData.map((f) => {
+                                        const totalUnits = f.current_units + f.pending_units;
+                                        const unitsPct = Math.min((totalUnits / f.max_units) * 100, 100);
+                                        const status = getLoadStatus(f.current_units, f.pending_units, f.max_units);
+                                        return (
+                                            <tr key={f.id}>
+                                                <td>
+                                                    <div>
+                                                        <p className="text-sm font-medium" style={{ color: "var(--color-text)" }}>
+                                                            {f.first_name} {f.last_name}
+                                                        </p>
+                                                        <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>
+                                                            {f.employee_id}
+                                                        </p>
                                                     </div>
-                                                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--color-surface-2)" }}>
-                                                        <div
-                                                            className="h-full rounded-full"
-                                                            style={{
-                                                                width: `${unitsPct}%`,
-                                                                background: unitsPct >= 100
-                                                                    ? "var(--color-error)"
-                                                                    : unitsPct >= 80
-                                                                        ? "var(--color-warning)"
-                                                                        : "var(--color-primary-light)",
-                                                            }}
-                                                        />
+                                                </td>
+                                                <td>
+                                                    <span className="badge badge-blue">{f.dept}</span>
+                                                </td>
+                                                <td>
+                                                    <p className="text-xs font-medium" style={{ color: "var(--color-text-secondary)" }}>
+                                                        {f.max_units} units / {f.max_classes} classes
+                                                    </p>
+                                                </td>
+                                                <td style={{ minWidth: "160px" }}>
+                                                    <div className="space-y-1">
+                                                        <div className="flex justify-between text-xs" style={{ color: "var(--color-text-secondary)" }}>
+                                                            <span>{f.current_units.toFixed(1)}{f.pending_units > 0 && <span style={{ color: "var(--color-accent)" }}> +{f.pending_units.toFixed(1)}</span>}</span>
+                                                            <span>{f.max_units.toFixed(1)}</span>
+                                                        </div>
+                                                        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--color-surface-2)" }}>
+                                                            <div
+                                                                className="h-full rounded-full transition-all duration-300"
+                                                                style={{
+                                                                    width: `${unitsPct}%`,
+                                                                    background: unitsPct >= 100
+                                                                        ? "var(--color-error)"
+                                                                        : unitsPct >= 80
+                                                                            ? "var(--color-warning)"
+                                                                            : "var(--color-primary-light)",
+                                                                }}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span className="text-sm font-medium" style={{ color: "var(--color-text)" }}>
-                                                    {f.current_classes}
-                                                    {f.pending_classes > 0 && (
-                                                        <span className="text-xs ml-1" style={{ color: "var(--color-accent)" }}>+{f.pending_classes}</span>
-                                                    )}
-                                                </span>
-                                                <span className="text-xs ml-1" style={{ color: "var(--color-text-muted)" }}>/ {f.max_classes}</span>
-                                            </td>
-                                            <td>
-                                                <span className={`badge ${status.cls}`}>{status.label}</span>
-                                            </td>
-                                            <td className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-                                                {formatDate(f.updated_at)}
-                                            </td>
-                                            <td>
-                                                <Link
-                                                    href={`/admin/faculty-load/${f.id}`}
-                                                    className="btn btn-sm btn-outline"
-                                                >
-                                                    Manage
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                                </td>
+                                                <td>
+                                                    <span className="text-sm font-medium" style={{ color: "var(--color-text)" }}>
+                                                        {f.current_classes}
+                                                        {f.pending_classes > 0 && (
+                                                            <span className="text-xs ml-1" style={{ color: "var(--color-accent)" }}>+{f.pending_classes}</span>
+                                                        )}
+                                                    </span>
+                                                    <span className="text-xs ml-1" style={{ color: "var(--color-text-muted)" }}>/ {f.max_classes}</span>
+                                                </td>
+                                                <td>
+                                                    <span className={`badge ${status.cls}`}>{status.label}</span>
+                                                </td>
+                                                <td className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+                                                    {formatDate(f.updated_at)}
+                                                </td>
+                                                <td>
+                                                    <Link
+                                                        href={`/admin/faculty-load/${f.id}`}
+                                                        className="btn btn-sm btn-outline"
+                                                    >
+                                                        Manage
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td colSpan={8} className="text-center py-8 text-sm" style={{ color: "var(--color-text-muted)" }}>
+                                            No instructors found matching your criteria.
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>
 
                     {/* Pagination placeholder */}
                     <div className="px-6 py-3 border-t flex items-center justify-between text-xs" style={{ borderColor: "var(--color-border)", color: "var(--color-text-muted)" }}>
-                        <span>Showing {FACULTY_LOAD_DATA.length} of {FACULTY_LOAD_DATA.length} instructors</span>
+                        <span>Showing {filteredData.length} of {FACULTY_LOAD_DATA.length} instructors</span>
                         <div className="flex gap-1">
                             <button className="btn btn-sm btn-ghost" disabled>← Prev</button>
                             <button className="btn btn-sm btn-ghost" disabled>Next →</button>
