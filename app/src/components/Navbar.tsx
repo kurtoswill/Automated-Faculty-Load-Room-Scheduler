@@ -87,9 +87,20 @@ function Sidebar({
     .slice(0, 2)
     .toUpperCase();
 
+  // Smart matching logic: Prevents parent links from lighting up 
+  // if a more specific sidebar link matches the current route exactly.
   function isActive(href: string, end?: boolean) {
     if (end) return pathname === href;
-    return pathname.startsWith(href);
+    if (pathname === href) return true;
+    
+    if (pathname.startsWith(href + "/")) {
+      const hasExactMatchElsewhere = groups.some((group) =>
+        group.items.some((item) => item.href === pathname)
+      );
+      return !hasExactMatchElsewhere;
+    }
+    
+    return false;
   }
 
   return (
