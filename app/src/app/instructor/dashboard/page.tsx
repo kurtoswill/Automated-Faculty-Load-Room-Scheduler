@@ -302,7 +302,7 @@ export default function InstructorDashboard() {
           icon={<IcoCalendar />}
           iconBg="#e8f5ee" iconColor="#1a7a3c"
           accent="#22a050"
-          href="/schedule"
+          href="/instructor/schedule"
         />
         <StatCard
           label="Pending Requests"
