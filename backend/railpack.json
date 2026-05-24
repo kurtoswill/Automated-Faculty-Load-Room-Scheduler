@@ -1,8 +1,8 @@
 {
-  "packages": [
-    "php84",
-    "php84Packages.composer"
-  ],
+  "packages": {
+    "php": "8.4",
+    "composer": "2"
+  },
   "build": {
     "commands": [
       "composer install --no-dev --optimize-autoloader --no-interaction"
