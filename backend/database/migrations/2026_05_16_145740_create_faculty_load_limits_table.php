@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Schema;
  * - PURPOSE: Enforces maximum teaching load (units/classes) per Instructor[cite: 47, 50].
  * - VALIDATION: Read during request approval to prevent over-scheduling[cite: 51].
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('faculty_load_limits', function (Blueprint $table) {

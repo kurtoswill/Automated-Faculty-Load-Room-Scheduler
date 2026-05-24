@@ -6,7 +6,6 @@ use App\Models\ConfirmedSchedule;
 use App\Models\FacultyLoadLimit;
 use App\Models\Room;
 use App\Models\RoomRequest;
-use Illuminate\Database\Eloquent\Relations\Relation;
 
 class ConflictCheckerService
 {

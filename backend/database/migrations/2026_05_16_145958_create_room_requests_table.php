@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Schema;
  * - PURPOSE: Records room booking requests submitted by Instructors[cite: 104].
  * - AUTOMATION: Validates room/instructor availability and faculty load[cite: 105].
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('room_requests', function (Blueprint $table) {

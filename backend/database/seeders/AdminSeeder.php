@@ -25,7 +25,6 @@ class AdminSeeder extends Seeder
             'password_hash' => Hash::make('Admin@1234'),
             'dept_id' => $department->id,
             'role' => 'Admin',
-            'is_irregular' => false,
             'is_active' => true,
         ]);
     }

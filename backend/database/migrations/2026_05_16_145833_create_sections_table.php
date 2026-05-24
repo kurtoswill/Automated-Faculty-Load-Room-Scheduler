@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Schema;
  * - PURPOSE: Active class sections offered in the current semester[cite: 70].
  * - STATUS: Draft (no request), Pending (review), Confirmed (live), Cancelled (inactive)[cite: 84, 86].
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('sections', function (Blueprint $table) {

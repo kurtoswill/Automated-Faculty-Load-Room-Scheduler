@@ -32,7 +32,6 @@ class DemoDataSeeder extends Seeder
             'password_hash' => Hash::make('Instructor@123'),
             'dept_id' => $dcs->id,
             'role' => 'Instructor',
-            'is_irregular' => false,
             'is_active' => true,
         ]);
 
@@ -45,7 +44,6 @@ class DemoDataSeeder extends Seeder
             'password_hash' => Hash::make('Instructor@123'),
             'dept_id' => $dit->id,
             'role' => 'Instructor',
-            'is_irregular' => false,
             'is_active' => true,
         ]);
 

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
 use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -39,7 +38,7 @@ class DepartmentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create department.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['department' => ['Unable to create department.']],
                 'data' => null,
             ], 500);
         }

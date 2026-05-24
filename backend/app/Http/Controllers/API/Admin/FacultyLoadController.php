@@ -7,6 +7,7 @@ use App\Http\Requests\FacultyLoadRequest;
 use App\Http\Resources\FacultyLoadSummaryResource;
 use App\Models\FacultyLoadLimit;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class FacultyLoadController extends Controller
@@ -52,7 +53,10 @@ class FacultyLoadController extends Controller
             $limit = DB::transaction(function () use ($request) {
                 return FacultyLoadLimit::updateOrCreate([
                     'instructor_id' => $request->instructor_id,
-                ], $request->validated());
+                ], [
+                    ...$request->validated(),
+                    'updated_by' => Auth::id(),
+                ]);
             });
 
             return response()->json([
@@ -64,7 +68,7 @@ class FacultyLoadController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to set faculty load limit.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['faculty_load' => ['Unable to set faculty load limit.']],
                 'data' => null,
             ], 500);
         }
@@ -82,7 +86,10 @@ class FacultyLoadController extends Controller
             ], 404);
         }
 
-        $limit->update($request->validated());
+        $limit->update([
+            ...$request->validated(),
+            'updated_by' => Auth::id(),
+        ]);
 
         return response()->json([
             'success' => true,

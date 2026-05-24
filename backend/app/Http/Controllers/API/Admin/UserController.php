@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -56,7 +56,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create user.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['user' => ['Unable to create user.']],
                 'data' => null,
             ], 500);
         }
@@ -118,7 +118,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update user.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['user' => ['Unable to update user.']],
                 'data' => null,
             ], 500);
         }
@@ -142,6 +142,75 @@ class UserController extends Controller
             'success' => true,
             'message' => 'User status toggled successfully.',
             'data' => new UserResource($user),
+        ]);
+    }
+
+    public function deactivate(int $id): JsonResponse
+    {
+        $user = User::find($id);
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found.',
+                'data' => null,
+            ], 404);
+        }
+
+        $user->update(['is_active' => false]);
+        $user->tokens()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User deactivated successfully.',
+            'data' => new UserResource($user->refresh()->load('department')),
+        ]);
+    }
+
+    public function reactivate(int $id): JsonResponse
+    {
+        $user = User::find($id);
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found.',
+                'data' => null,
+            ], 404);
+        }
+
+        $user->update(['is_active' => true]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User reactivated successfully.',
+            'data' => new UserResource($user->refresh()->load('department')),
+        ]);
+    }
+
+    public function resetPassword(Request $request, int $id): JsonResponse
+    {
+        $validated = $request->validate([
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = User::find($id);
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found.',
+                'data' => null,
+            ], 404);
+        }
+
+        $user->update(['password_hash' => Hash::make($validated['password'])]);
+        $user->tokens()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User password reset successfully.',
+            'data' => null,
         ]);
     }
 }

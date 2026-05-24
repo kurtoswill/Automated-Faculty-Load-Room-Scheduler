@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Schema;
  * - PURPOSE: Transactional alerts generated during room request workflows[cite: 156].
  * - INTERFACE: Powers the /notifications page for all user roles[cite: 154].
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('notifications', function (Blueprint $table) {
@@ -22,7 +23,7 @@ return new class extends Migration {
                 'Request_Cancelled',
                 'Booking_Released',
                 'Load_Limit_Updated',
-                'Room_Status_Changed'
+                'Room_Status_Changed',
             ]);
             $table->string('reference_table', 50);
             $table->integer('reference_id'); // Used for frontend deep-linking[cite: 164].

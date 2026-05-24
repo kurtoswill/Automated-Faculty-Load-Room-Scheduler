@@ -1,100 +1,143 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\Admin\AuditLogController as AdminAuditLog;
+use App\Http\Controllers\API\Admin\CourseController as AdminCourse;
+use App\Http\Controllers\API\Admin\DashboardController as AdminDashboard;
+// Admin Controllers
+use App\Http\Controllers\API\Admin\DepartmentController as AdminDepartment;
+use App\Http\Controllers\API\Admin\FacultyLoadController as AdminFacultyLoad;
+use App\Http\Controllers\API\Admin\ReportController as AdminReport;
+use App\Http\Controllers\API\Admin\RoomController as AdminRoom;
+use App\Http\Controllers\API\Admin\RoomRequestController as AdminRequest;
+use App\Http\Controllers\API\Admin\ScheduleController as AdminSchedule;
+use App\Http\Controllers\API\Admin\SectionController as AdminSection;
+use App\Http\Controllers\API\Admin\SectionStudentController as AdminSectionStudent;
+use App\Http\Controllers\API\Admin\UserController as AdminUser;
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\Instructor\DashboardController as InstructorDashboard;
+use App\Http\Controllers\API\Instructor\FacultyLoadController as InstructorFacultyLoad;
+// Instructor Controllers
+use App\Http\Controllers\API\Instructor\RequestController as InstructorRequest;
+use App\Http\Controllers\API\Instructor\RoomController as InstructorRoom;
+use App\Http\Controllers\API\Instructor\ScheduleController as InstructorSchedule;
 use App\Http\Controllers\API\NotificationController;
-use App\Http\Controllers\API\Admin\UserController as AdminUserController;
-use App\Http\Controllers\API\Admin\DepartmentController;
-use App\Http\Controllers\API\Admin\RoomController as AdminRoomController;
-use App\Http\Controllers\API\Admin\RoomRequestController;
-use App\Http\Controllers\API\Admin\ScheduleController as AdminScheduleController;
-use App\Http\Controllers\API\Admin\FacultyLoadController;
-use App\Http\Controllers\API\Admin\CourseController;
-use App\Http\Controllers\API\Admin\SectionController;
-use App\Http\Controllers\API\Admin\SectionStudentController;
-use App\Http\Controllers\API\Admin\ReportController;
-use App\Http\Controllers\API\Admin\AuditLogController;
-use App\Http\Controllers\API\Admin\DashboardController;
-use App\Http\Controllers\API\Instructor\RoomController as InstructorRoomController;
-use App\Http\Controllers\API\Instructor\RequestController as InstructorRequestController;
-use App\Http\Controllers\API\Instructor\ScheduleController as InstructorScheduleController;
-use App\Http\Controllers\API\Instructor\FacultyLoadController as InstructorFacultyLoadController;
-use App\Http\Controllers\API\Instructor\DashboardController as InstructorDashboardController;
-use App\Http\Controllers\API\Student\DashboardController as StudentDashboardController;
-use App\Http\Controllers\API\Student\ScheduleController as StudentScheduleController;
+use App\Http\Controllers\API\ProfileController;
+// Student Controllers
+use App\Http\Controllers\API\Student\DashboardController as StudentDashboard;
+use App\Http\Controllers\API\Student\ScheduleController as StudentSchedule;
+use Illuminate\Support\Facades\Route;
 
-Route::prefix('auth')->group(function () {
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-    Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');
-    Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('reset-password', [AuthController::class, 'resetPassword']);
-    Route::patch('change-password', [AuthController::class, 'changePassword'])->middleware('auth:sanctum');
-});
+/*
+|--------------------------------------------------------------------------
+| Public Routes (No Authentication Required)
+|--------------------------------------------------------------------------
+*/
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password/{token}', [AuthController::class, 'resetPassword']);
 
+/*
+|--------------------------------------------------------------------------
+| Protected Routes (Requires Authentication)
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth:sanctum', 'active'])->group(function () {
-    Route::get('profile', [ProfileController::class, 'show']);
-    Route::patch('profile', [ProfileController::class, 'update']);
 
-    Route::get('notifications', [NotificationController::class, 'index']);
-    Route::patch('notifications/{id}/read', [NotificationController::class, 'markRead']);
-    Route::patch('notifications/read-all', [NotificationController::class, 'markAllRead']);
+    // --- Global Authenticated Routes ---
+    Route::get('/auth/me', [AuthController::class, 'me']);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-    Route::middleware('role:Admin')->prefix('admin')->group(function () {
-        Route::apiResource('users', AdminUserController::class)->except(['destroy']);
-        Route::patch('users/{id}/toggle-status', [AdminUserController::class, 'toggleStatus']);
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::patch('/profile', [ProfileController::class, 'update']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
 
-        Route::apiResource('departments', DepartmentController::class)->except(['show']);
-        Route::delete('departments/{id}', [DepartmentController::class, 'destroy']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead']); // Put read-all BEFORE {id} to prevent route conflicts
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markRead']);
 
-        Route::apiResource('rooms', AdminRoomController::class)->except(['destroy']);
-        Route::patch('rooms/{id}/toggle-availability', [AdminRoomController::class, 'toggleAvailability']);
-        Route::delete('rooms/{id}', [AdminRoomController::class, 'destroy']);
-        Route::get('room-types', [AdminRoomController::class, 'types']);
+    // --- ADMIN ROUTES ---
+    Route::middleware('role:admin')->prefix('admin')->group(function () {
+        Route::get('/dashboard', [AdminDashboard::class, 'index']);
 
-        Route::get('requests', [RoomRequestController::class, 'index']);
-        Route::get('requests/{id}', [RoomRequestController::class, 'show']);
-        Route::patch('requests/{id}/approve', [RoomRequestController::class, 'approve']);
-        Route::patch('requests/{id}/reject', [RoomRequestController::class, 'reject']);
+        // Users
+        Route::get('/users', [AdminUser::class, 'index']);
+        Route::post('/users', [AdminUser::class, 'store']);
+        Route::get('/users/{id}', [AdminUser::class, 'show']);
+        Route::patch('/users/{id}', [AdminUser::class, 'update']);
+        Route::post('/users/{id}/deactivate', [AdminUser::class, 'deactivate']);
+        Route::post('/users/{id}/reactivate', [AdminUser::class, 'reactivate']);
+        Route::post('/users/{id}/reset-password', [AdminUser::class, 'resetPassword']);
 
-        Route::get('schedule', [AdminScheduleController::class, 'index']);
-        Route::patch('schedule/{id}/release', [AdminScheduleController::class, 'release']);
+        // Departments
+        Route::get('/departments', [AdminDepartment::class, 'index']);
+        Route::post('/departments', [AdminDepartment::class, 'store']);
+        Route::patch('/departments/{id}', [AdminDepartment::class, 'update']);
+        Route::delete('/departments/{id}', [AdminDepartment::class, 'destroy']);
 
-        Route::get('faculty-load', [FacultyLoadController::class, 'index']);
-        Route::get('faculty-load/{instructor_id}', [FacultyLoadController::class, 'show']);
-        Route::post('faculty-load', [FacultyLoadController::class, 'store']);
-        Route::patch('faculty-load/{id}', [FacultyLoadController::class, 'update']);
+        // Courses
+        Route::get('/courses', [AdminCourse::class, 'index']);
+        Route::post('/courses', [AdminCourse::class, 'store']);
 
-        Route::apiResource('courses', CourseController::class)->only(['index','store']);
-        Route::apiResource('sections', SectionController::class)->except(['create','edit']);
-        Route::get('sections/{id}/students', [SectionStudentController::class, 'index']);
-        Route::post('sections/{id}/students', [SectionStudentController::class, 'store']);
-        Route::delete('sections/{id}/students/{student_id}', [SectionStudentController::class, 'destroy']);
+        // Sections
+        Route::get('/sections', [AdminSection::class, 'index']);
+        Route::post('/sections', [AdminSection::class, 'store']);
+        Route::get('/sections/{id}', [AdminSection::class, 'show']);
+        Route::patch('/sections/{id}', [AdminSection::class, 'update']);
+        Route::delete('/sections/{id}', [AdminSection::class, 'destroy']);
+        Route::get('/sections/{id}/students', [AdminSectionStudent::class, 'index']);
+        Route::post('/sections/{id}/students', [AdminSectionStudent::class, 'store']);
+        Route::delete('/sections/{id}/students/{student_id}', [AdminSectionStudent::class, 'destroy']);
 
-        Route::get('reports/master-schedule', [ReportController::class, 'masterSchedule']);
-        Route::get('reports/faculty-load', [ReportController::class, 'facultyLoad']);
+        // Rooms
+        Route::get('/rooms', [AdminRoom::class, 'index']);
+        Route::post('/rooms', [AdminRoom::class, 'store']);
+        Route::get('/rooms/{id}', [AdminRoom::class, 'show']);
+        Route::patch('/rooms/{id}', [AdminRoom::class, 'update']);
+        Route::patch('/rooms/{id}/toggle', [AdminRoom::class, 'toggleAvailability']);
+        Route::delete('/rooms/{id}', [AdminRoom::class, 'destroy']);
+        Route::get('/room-types', [AdminRoom::class, 'types']);
+        Route::get('/buildings', [AdminRoom::class, 'buildings']);
 
-        Route::get('audit-log', [AuditLogController::class, 'index']);
-        Route::get('dashboard', [DashboardController::class, 'index']);
+        // Requests
+        Route::get('/requests', [AdminRequest::class, 'index']);
+        Route::get('/requests/{id}', [AdminRequest::class, 'show']);
+        Route::post('/requests/{id}/approve', [AdminRequest::class, 'approve']);
+        Route::post('/requests/{id}/reject', [AdminRequest::class, 'reject']);
+
+        // Academic / System
+        Route::get('/schedule', [AdminSchedule::class, 'index']);
+        Route::post('/schedule/{id}/release', [AdminSchedule::class, 'release']);
+        Route::get('/faculty-load', [AdminFacultyLoad::class, 'index']);
+        Route::post('/faculty-load', [AdminFacultyLoad::class, 'store']);
+        Route::get('/faculty-load/{id}', [AdminFacultyLoad::class, 'show']);
+        Route::patch('/faculty-load/{id}', [AdminFacultyLoad::class, 'update']);
+        Route::get('/reports', [AdminReport::class, 'index']);
+        Route::get('/reports/master-schedule', [AdminReport::class, 'masterSchedule']);
+        Route::get('/reports/faculty-load', [AdminReport::class, 'facultyLoad']);
+        Route::get('/audit-log', [AdminAuditLog::class, 'index']);
     });
 
-    Route::middleware('role:Instructor')->prefix('instructor')->group(function () {
-        Route::get('dashboard', [InstructorDashboardController::class, 'index']);
-        Route::get('rooms', [InstructorRoomController::class, 'index']);
-        Route::get('rooms/{id}', [InstructorRoomController::class, 'show']);
+    // --- INSTRUCTOR ROUTES ---
+    Route::middleware('role:instructor')->group(function () {
+        // Prefixed with /instructor
+        Route::prefix('instructor')->group(function () {
+            Route::get('/dashboard', [InstructorDashboard::class, 'index']);
+            Route::get('/rooms', [InstructorRoom::class, 'index']);
+            Route::get('/schedule', [InstructorSchedule::class, 'index']);
+            Route::get('/faculty-load', [InstructorFacultyLoad::class, 'index']);
+        });
 
-        Route::get('requests', [InstructorRequestController::class, 'index']);
-        Route::get('requests/{id}', [InstructorRequestController::class, 'show']);
-        Route::post('requests', [InstructorRequestController::class, 'store']);
-        Route::patch('requests/{id}/cancel', [InstructorRequestController::class, 'cancel']);
-
-        Route::get('schedule', [InstructorScheduleController::class, 'index']);
-        Route::get('faculty-load', [InstructorFacultyLoadController::class, 'index']);
+        // Not prefixed with /instructor (Based on your table)
+        Route::get('/requests', [InstructorRequest::class, 'index']);
+        Route::post('/requests', [InstructorRequest::class, 'store']);
+        Route::get('/requests/{id}', [InstructorRequest::class, 'show']);
+        Route::post('/requests/{id}/cancel', [InstructorRequest::class, 'cancel']);
+        Route::post('/requests/{id}/release', [InstructorRequest::class, 'release']);
     });
 
-    Route::middleware('role:Student')->prefix('student')->group(function () {
-        Route::get('dashboard', [StudentDashboardController::class, 'index']);
-        Route::get('schedule', [StudentScheduleController::class, 'index']);
+    // --- STUDENT ROUTES ---
+    Route::middleware('role:student')->prefix('student')->group(function () {
+        Route::get('/dashboard', [StudentDashboard::class, 'index']);
+        Route::get('/schedule', [StudentSchedule::class, 'index']);
     });
 });

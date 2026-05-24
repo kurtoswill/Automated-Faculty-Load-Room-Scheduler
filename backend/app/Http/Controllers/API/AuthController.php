@@ -88,7 +88,7 @@ class AuthController extends Controller
 
         $token = Str::random(64);
 
-        DB::table('password_resets')->updateOrInsert([
+        DB::table('password_reset_tokens')->updateOrInsert([
             'email' => $user->email,
         ], [
             'token' => Hash::make($token),
@@ -104,7 +104,7 @@ class AuthController extends Controller
 
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
-        $record = DB::table('password_resets')
+        $record = DB::table('password_reset_tokens')
             ->where('email', $request->email)
             ->first();
 
@@ -128,7 +128,7 @@ class AuthController extends Controller
         }
 
         $user->update(['password_hash' => Hash::make($request->password)]);
-        DB::table('password_resets')->where('email', $request->email)->delete();
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
 
         return response()->json([
             'success' => true,

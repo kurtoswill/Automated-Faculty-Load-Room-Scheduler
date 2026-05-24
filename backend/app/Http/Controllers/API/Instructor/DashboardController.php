@@ -39,10 +39,18 @@ class DashboardController extends Controller
                 'approved_requests' => $approvedRequests,
                 'confirmed_schedules' => $confirmedSchedules,
                 'load_summary' => $loadSummary ? [
-                    'total_load' => $loadSummary->total_load,
-                    'credit_hours' => $loadSummary->credit_hours,
-                    'load_utilization' => $loadSummary->load_utilization,
-                ] : null,
+                    'total_units' => $loadSummary->current_units ?? 0,
+                    'max_units' => $loadSummary->max_units ?? 0,
+                    'remaining_units' => $loadSummary->remaining_units ?? 0,
+                    'utilization_percent' => $loadSummary->utilization_percent ?? 0,
+                    'courses' => [],
+                ] : [
+                    'total_units' => 0,
+                    'max_units' => 0,
+                    'remaining_units' => 0,
+                    'utilization_percent' => 0,
+                    'courses' => [],
+                ],
             ],
         ]);
     }

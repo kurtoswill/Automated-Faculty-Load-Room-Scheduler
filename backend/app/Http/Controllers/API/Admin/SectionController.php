@@ -43,7 +43,7 @@ class SectionController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create section.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['section' => ['Unable to create section.']],
                 'data' => null,
             ], 500);
         }

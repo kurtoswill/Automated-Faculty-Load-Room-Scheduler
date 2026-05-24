@@ -13,7 +13,9 @@ class ScheduleController extends Controller
     public function index(): JsonResponse
     {
         $schedules = ConfirmedSchedule::with(['room.type', 'section.course', 'instructor.department'])
-            ->where('student_id', Auth::id())
+            ->whereHas('section.studentSections', function ($query) {
+                $query->where('student_id', Auth::id());
+            })
             ->where('is_active', true)
             ->paginate(15);
 
