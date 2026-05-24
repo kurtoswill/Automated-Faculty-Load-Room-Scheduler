@@ -1,4 +1,8 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL!;
+const RAW_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  '';
+const BASE = RAW_BASE.replace(/\/+$/, '');
 
 function getStoredToken() {
   if (typeof window === 'undefined') return null;
@@ -14,7 +18,8 @@ async function request<T>(
 ): Promise<T> {
   const token = getStoredToken();
 
-  const res = await fetch(`${BASE}${path}`, {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const res = await fetch(`${BASE}${normalizedPath}`, {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
