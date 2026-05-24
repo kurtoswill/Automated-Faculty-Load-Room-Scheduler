@@ -4,11 +4,16 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class BuildingsSeeder extends Seeder
 {
     public function run(): void
     {
+        if (!Schema::hasTable('buildings')) {
+            return;
+        }
+
         $now = now();
 
         $rows = [
@@ -27,4 +32,3 @@ class BuildingsSeeder extends Seeder
         }
     }
 }
-
