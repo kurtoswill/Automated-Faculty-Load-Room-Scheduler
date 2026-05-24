@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RequestReviewRequest;
 use App\Http\Requests\SubmitRoomRequest;
 use App\Http\Resources\RoomRequestResource;
+use App\Models\ConfirmedSchedule;
 use App\Models\RoomRequest;
 use App\Services\AuditService;
 use App\Services\NotificationService;
@@ -87,7 +88,7 @@ class RequestController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to submit room request.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['request' => ['Unable to submit request.']],
                 'data' => null,
             ], 500);
         }
@@ -127,7 +128,7 @@ class RequestController extends Controller
                     'CANCEL_REQUEST',
                     'room_requests',
                     $roomRequest->id,
-                    'Cancelled request id: ' . $roomRequest->id
+                    'Cancelled request id: '.$roomRequest->id
                 );
             });
 
@@ -140,7 +141,71 @@ class RequestController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to cancel room request.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['request' => ['Unable to cancel request.']],
+                'data' => null,
+            ], 500);
+        }
+    }
+
+    public function release(RequestReviewRequest $request, int $id, AuditService $auditService, NotificationService $notificationService): JsonResponse
+    {
+        $roomRequest = RoomRequest::where('id', $id)->where('instructor_id', Auth::id())->first();
+
+        if (! $roomRequest) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Room request not found.',
+                'data' => null,
+            ], 404);
+        }
+
+        if ($roomRequest->status !== 'Approved') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only approved requests can be released.',
+                'errors' => ['status' => ['Only approved requests can be released.']],
+                'data' => null,
+            ], 422);
+        }
+
+        try {
+            DB::transaction(function () use ($request, $roomRequest, $auditService, $notificationService) {
+                $roomRequest->update([
+                    'status' => 'Released',
+                    'admin_remarks' => $request->remarks,
+                    'reviewed_at' => now(),
+                    'reviewed_by' => Auth::id(),
+                ]);
+
+                ConfirmedSchedule::where('request_id', $roomRequest->id)->update(['is_active' => false]);
+
+                $notificationService->notify(
+                    $roomRequest->instructor_id,
+                    'Request_Released',
+                    'room_requests',
+                    $roomRequest->id,
+                    'Your room booking has been released.'
+                );
+
+                $auditService->log(
+                    Auth::id(),
+                    'RELEASE_REQUEST',
+                    'room_requests',
+                    $roomRequest->id,
+                    'Released request id: '.$roomRequest->id
+                );
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Room request released successfully.',
+                'data' => null,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to release room request.',
+                'errors' => ['request' => ['Unable to release request.']],
                 'data' => null,
             ], 500);
         }

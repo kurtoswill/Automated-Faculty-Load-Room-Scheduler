@@ -6,6 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ResetPasswordRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if (! $this->has('token') && $this->route('token')) {
+            $this->merge(['token' => $this->route('token')]);
+        }
+    }
+
     public function authorize(): bool
     {
         return true;

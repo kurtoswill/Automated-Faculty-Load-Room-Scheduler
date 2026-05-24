@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Schema;
  * - PURPOSE: The system's master schedule; entries are auto-inserted upon request approval[cite: 121, 122].
  * - AVAILABILITY: Setting is_active=FALSE releases the slot back to available[cite: 125].
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('confirmed_schedule', function (Blueprint $table) {

@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Room;
+use App\Models\User;
 
 class RoomPolicy
 {

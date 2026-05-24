@@ -66,7 +66,7 @@ class SectionStudentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to assign student to section.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['student' => ['Unable to assign student to section.']],
                 'data' => null,
             ], 500);
         }

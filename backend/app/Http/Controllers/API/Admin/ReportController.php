@@ -8,6 +8,18 @@ use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
+    public function index(): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'Reports fetched.',
+            'data' => [
+                'master_schedule' => DB::table('vw_master_schedule')->get(),
+                'faculty_load' => DB::table('vw_faculty_load_summary')->get(),
+            ],
+        ]);
+    }
+
     public function masterSchedule(): JsonResponse
     {
         $report = DB::table('vw_master_schedule')->get();

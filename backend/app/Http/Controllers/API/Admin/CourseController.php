@@ -43,7 +43,7 @@ class CourseController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create course.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['course' => ['Unable to create course.']],
                 'data' => null,
             ], 500);
         }

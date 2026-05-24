@@ -18,7 +18,7 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'max:50'],
             'last_name' => ['required', 'string', 'max:50'],
-            'email' => ['required', 'email', 'max:100', 'unique:users,email,' . $userId],
+            'email' => ['required', 'email', 'max:100', 'unique:users,email,'.$userId],
             'department_id' => ['required', 'exists:departments,id'],
         ];
     }

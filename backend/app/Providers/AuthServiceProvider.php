@@ -2,18 +2,18 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 use App\Models\Department;
+use App\Models\Notification;
 use App\Models\Room;
 use App\Models\RoomRequest;
 use App\Models\Section;
-use App\Models\Notification;
 use App\Policies\DepartmentPolicy;
+use App\Policies\NotificationPolicy;
 use App\Policies\RoomPolicy;
 use App\Policies\RoomRequestPolicy;
 use App\Policies\SectionPolicy;
-use App\Policies\NotificationPolicy;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {

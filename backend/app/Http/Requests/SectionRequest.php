@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SectionRequest extends FormRequest
 {
@@ -15,7 +16,10 @@ class SectionRequest extends FormRequest
     {
         return [
             'course_id' => ['required', 'exists:courses,id'],
-            'instructor_id' => ['required', 'exists:users,id'],
+            'instructor_id' => [
+                'required',
+                Rule::exists('users', 'id')->where('role', 'Instructor'),
+            ],
             'section_name' => ['required', 'string', 'max:20'],
             'semester' => ['required', 'string', 'max:20'],
             'year_level' => ['required', 'integer', 'between:1,5'],

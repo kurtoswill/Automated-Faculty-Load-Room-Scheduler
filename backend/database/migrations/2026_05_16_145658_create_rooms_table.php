@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Schema;
  * - CAPACITY: Strictly enforced; requests exceeding this value are blocked[cite: 41].
  * - AVAILABILITY: Admin sets is_available=FALSE during renovations[cite: 43].
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('rooms', function (Blueprint $table) {
@@ -20,8 +21,9 @@ return new class extends Migration {
             $table->integer('capacity'); // Max student headcount[cite: 41].
             $table->foreignId('type_id')->constrained('room_types');
             $table->boolean('is_available')->default(true); // General usability flag[cite: 43].
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
         });
+
     }
 
     public function down(): void

@@ -85,7 +85,7 @@ class RoomRequestController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Approval failed due to server error.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['request' => ['Unable to approve request.']],
                 'data' => null,
             ], 500);
         }
@@ -125,7 +125,7 @@ class RoomRequestController extends Controller
                     'REJECT_REQUEST',
                     'room_requests',
                     $roomRequest->id,
-                    'Rejected request id: ' . $roomRequest->id
+                    'Rejected request id: '.$roomRequest->id
                 );
             });
 
@@ -138,7 +138,7 @@ class RoomRequestController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to reject request.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['request' => ['Unable to reject request.']],
                 'data' => null,
             ], 500);
         }

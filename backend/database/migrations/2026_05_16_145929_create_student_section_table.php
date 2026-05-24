@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Schema;
  * - PURPOSE: Read-only link between Students and their assigned Sections[cite: 91].
  * - CONSTRAINT: UNIQUE(student_id, section_id) prevents double assignment[cite: 99].
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('student_section', function (Blueprint $table) {

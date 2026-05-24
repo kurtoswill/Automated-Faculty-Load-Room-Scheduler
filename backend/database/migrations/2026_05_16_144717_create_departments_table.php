@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Schema;
  * - PURPOSE: Categorizes all users by their academic department[cite: 7].
  * - SCOPE: Used for profile display, filtering, and faculty load reports[cite: 7].
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('departments', function (Blueprint $table) {

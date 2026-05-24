@@ -45,7 +45,7 @@ class RoomController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create room.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['room' => ['Unable to create room.']],
                 'data' => null,
             ], 500);
         }
@@ -139,6 +139,20 @@ class RoomController extends Controller
             'success' => true,
             'message' => 'Room types fetched.',
             'data' => RoomTypeResource::collection(RoomType::all()),
+        ]);
+    }
+
+    public function buildings(): JsonResponse
+    {
+        $buildings = DB::table('buildings')
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Buildings fetched.',
+            'data' => $buildings,
         ]);
     }
 }

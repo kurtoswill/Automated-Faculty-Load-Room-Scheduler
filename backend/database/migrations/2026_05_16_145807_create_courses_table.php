@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Schema;
  * AI Agent Context:
  * - PURPOSE: The academic catalog containing all available subjects[cite: 61, 62].
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('courses', function (Blueprint $table) {

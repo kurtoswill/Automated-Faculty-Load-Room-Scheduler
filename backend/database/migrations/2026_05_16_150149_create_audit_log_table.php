@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Schema;
  * - PURPOSE: Append-only accountability record of significant actions[cite: 138, 142].
  * - RETENTION: Records are never modified or deleted[cite: 139, 140].
  */
-return new class extends Migration {
-    public function up(): void {
+return new class extends Migration
+{
+    public function up(): void
+    {
         Schema::create('audit_log', function (Blueprint $table) {
             $table->id(); // id (PK): INT[cite: 144].
             $table->foreignId('actor_id')->constrained('users'); // Action performer[cite: 145].
@@ -22,7 +24,8 @@ return new class extends Migration {
         });
     }
 
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('audit_log');
     }
 };

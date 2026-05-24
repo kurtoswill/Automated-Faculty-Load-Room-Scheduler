@@ -52,7 +52,7 @@ class ScheduleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to release booking.',
-                'errors' => ['exception' => [$e->getMessage()]],
+                'errors' => ['schedule' => ['Unable to release booking.']],
                 'data' => null,
             ], 500);
         }

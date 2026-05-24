@@ -16,9 +16,9 @@ class UserRequest extends FormRequest
         $userId = $this->route('id');
 
         return [
-            'employee_id' => ['nullable', 'string', 'max:20', 'unique:users,employee_id,' . $userId],
-            'student_id' => ['nullable', 'string', 'max:20', 'unique:users,student_id,' . $userId],
-            'email' => ['required', 'email', 'max:100', 'unique:users,email,' . $userId],
+            'employee_id' => ['nullable', 'string', 'max:20', 'unique:users,employee_id,'.$userId],
+            'student_id' => ['nullable', 'string', 'max:20', 'unique:users,student_id,'.$userId],
+            'email' => ['required', 'email', 'max:100', 'unique:users,email,'.$userId],
             'password' => [$this->isMethod('post') ? 'required' : 'nullable', 'string', 'min:8'],
             'first_name' => ['required', 'string', 'max:50'],
             'last_name' => ['required', 'string', 'max:50'],

@@ -16,7 +16,7 @@ class RoomRequest extends FormRequest
         $roomId = $this->route('id');
 
         return [
-            'room_number' => ['required', 'string', 'max:20', 'unique:rooms,room_number,' . $roomId],
+            'room_number' => ['required', 'string', 'max:20', 'unique:rooms,room_number,'.$roomId],
             'building' => ['required', 'string', 'max:100'],
             'capacity' => ['required', 'integer', 'min:1'],
             'type_id' => ['required', 'exists:room_types,id'],
