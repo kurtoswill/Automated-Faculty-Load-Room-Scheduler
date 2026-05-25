@@ -11,6 +11,7 @@ class Room extends Model
 
     protected $fillable = [
         'room_number',
+        'building_id',
         'building',
         'capacity',
         'type_id',
@@ -24,6 +25,11 @@ class Room extends Model
     public function type()
     {
         return $this->belongsTo(RoomType::class, 'type_id');
+    }
+
+    public function buildingRef()
+    {
+        return $this->belongsTo(Building::class, 'building_id');
     }
 
     public function requests()

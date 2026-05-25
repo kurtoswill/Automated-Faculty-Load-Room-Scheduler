@@ -15,7 +15,7 @@ class RoomController extends Controller
 {
     public function index(): JsonResponse
     {
-        $rooms = Room::with('type')->paginate(15);
+        $rooms = Room::with(['type', 'buildingRef'])->paginate(15);
 
         return response()->json([
             'success' => true,
@@ -39,7 +39,7 @@ class RoomController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Room created successfully.',
-                'data' => new RoomResource($room->load('type')),
+                'data' => new RoomResource($room->load(['type', 'buildingRef'])),
             ], 201);
         } catch (\Throwable $e) {
             return response()->json([
@@ -53,7 +53,7 @@ class RoomController extends Controller
 
     public function show(int $id): JsonResponse
     {
-        $room = Room::with('type')->find($id);
+        $room = Room::with(['type', 'buildingRef'])->find($id);
 
         if (! $room) {
             return response()->json([
@@ -87,7 +87,7 @@ class RoomController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Room updated successfully.',
-            'data' => new RoomResource($room->load('type')),
+            'data' => new RoomResource($room->load(['type', 'buildingRef'])),
         ]);
     }
 
@@ -108,7 +108,7 @@ class RoomController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Room availability toggled.',
-            'data' => new RoomResource($room->load('type')),
+            'data' => new RoomResource($room->load(['type', 'buildingRef'])),
         ]);
     }
 
@@ -145,7 +145,7 @@ class RoomController extends Controller
     public function buildings(): JsonResponse
     {
         $buildings = DB::table('buildings')
-            ->select('id', 'name')
+            ->select('id', 'code', 'name')
             ->orderBy('name')
             ->get();
 

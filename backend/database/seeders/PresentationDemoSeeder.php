@@ -198,5 +198,127 @@ class PresentationDemoSeeder extends Seeder
                 'updated_at' => $now,
             ]
         );
+
+        // Room requests (presentation flow)
+        $room1Id = DB::table('rooms')->where('room_number', 'CS-201')->value('id');
+        $room2Id = DB::table('rooms')->where('room_number', 'CL-204')->value('id');
+
+        $pendingRequestId = null;
+        if ($section1Id && $room1Id && $instructorId) {
+            DB::table('room_requests')->updateOrInsert(
+                [
+                    'section_id' => $section1Id,
+                    'room_id' => $room1Id,
+                    'instructor_id' => $instructorId,
+                    'day_of_week' => 'Monday',
+                    'time_start' => '08:00:00',
+                    'time_end' => '11:00:00',
+                ],
+                [
+                    'status' => 'Pending',
+                    'admin_remarks' => null,
+                    'submitted_at' => $now,
+                    'reviewed_at' => null,
+                    'reviewed_by' => null,
+                ]
+            );
+            $pendingRequestId = DB::table('room_requests')
+                ->where('section_id', $section1Id)
+                ->where('room_id', $room1Id)
+                ->where('instructor_id', $instructorId)
+                ->value('id');
+        }
+
+        $approvedRequestId = null;
+        if ($section2Id && $room2Id && $instructorId && $adminId) {
+            DB::table('room_requests')->updateOrInsert(
+                [
+                    'section_id' => $section2Id,
+                    'room_id' => $room2Id,
+                    'instructor_id' => $instructorId,
+                    'day_of_week' => 'Wednesday',
+                    'time_start' => '13:00:00',
+                    'time_end' => '16:00:00',
+                ],
+                [
+                    'status' => 'Approved',
+                    'admin_remarks' => 'Approved for demo schedule flow.',
+                    'submitted_at' => $now,
+                    'reviewed_at' => $now,
+                    'reviewed_by' => $adminId,
+                ]
+            );
+            $approvedRequestId = DB::table('room_requests')
+                ->where('section_id', $section2Id)
+                ->where('room_id', $room2Id)
+                ->where('instructor_id', $instructorId)
+                ->value('id');
+        }
+
+        // Confirmed schedule linked to approved request
+        if ($approvedRequestId && $section2Id && $room2Id && $instructorId) {
+            DB::table('confirmed_schedule')->updateOrInsert(
+                ['request_id' => $approvedRequestId],
+                [
+                    'section_id' => $section2Id,
+                    'room_id' => $room2Id,
+                    'instructor_id' => $instructorId,
+                    'day_of_week' => 'Wednesday',
+                    'time_start' => '13:00:00',
+                    'time_end' => '16:00:00',
+                    'is_active' => 1,
+                    'confirmed_at' => $now,
+                ]
+            );
+        }
+
+        // Notifications for demo visibility
+        if ($pendingRequestId && $instructorId) {
+            DB::table('notifications')->updateOrInsert(
+                [
+                    'user_id' => $instructorId,
+                    'type' => 'Request_Submitted',
+                    'reference_table' => 'room_requests',
+                    'reference_id' => $pendingRequestId,
+                ],
+                [
+                    'message' => 'Your room request is pending review.',
+                    'is_read' => 0,
+                    'created_at' => $now,
+                ]
+            );
+        }
+
+        if ($approvedRequestId && $instructorId) {
+            DB::table('notifications')->updateOrInsert(
+                [
+                    'user_id' => $instructorId,
+                    'type' => 'Request_Approved',
+                    'reference_table' => 'room_requests',
+                    'reference_id' => $approvedRequestId,
+                ],
+                [
+                    'message' => 'Your room request was approved.',
+                    'is_read' => 0,
+                    'created_at' => $now,
+                ]
+            );
+        }
+
+        if ($approvedRequestId && $studentId) {
+            DB::table('notifications')->updateOrInsert(
+                [
+                    'user_id' => $studentId,
+                    'type' => 'Request_Approved',
+                    'reference_table' => 'room_requests',
+                    'reference_id' => $approvedRequestId,
+                ],
+                [
+                    'message' => 'A class schedule has been confirmed for your section.',
+                    'is_read' => 0,
+                    'created_at' => $now,
+                ]
+            );
+        }
     }
 }

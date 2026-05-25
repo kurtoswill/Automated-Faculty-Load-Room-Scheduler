@@ -16,18 +16,21 @@ class BuildingsSeeder extends Seeder
 
         $now = now();
 
+        DB::table('buildings')->where('code', '!=', 'DIT')->delete();
+
         $rows = [
-            'DIT',
-            'CAS',
-            'Old CEMDS',
-            'New CEMDS',
-            'CSPEAR',
+            ['id' => 1, 'code' => 'DIT', 'name' => 'Department of Information Technology Building'],
         ];
 
-        foreach ($rows as $name) {
+        foreach ($rows as $row) {
             DB::table('buildings')->updateOrInsert(
-                ['name' => $name],
-                ['created_at' => $now, 'updated_at' => $now]
+                ['id' => $row['id']],
+                [
+                    'code' => $row['code'],
+                    'name' => $row['name'],
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
             );
         }
     }

@@ -12,10 +12,10 @@ class DepartmentSeeder extends Seeder
 
     public function run(): void
     {
+        Department::query()->where('code', '!=', 'DIT')->delete();
+
         Department::upsert([
-            ['name' => 'Department of Computer Science', 'code' => 'DCS'],
             ['name' => 'Department of Information Technology', 'code' => 'DIT'],
-            ['name' => 'Department of Mechanical Engineering', 'code' => 'DME'],
         ], ['code'], ['name']);
     }
 }
